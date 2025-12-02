@@ -2,7 +2,6 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-
 const useAuth= () => {
     const [form, setForm] = useState({name: "", email: "", password: "", confirmPassword: "",});
     const [errors, setErrors] = useState({});

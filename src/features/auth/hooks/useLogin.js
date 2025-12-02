@@ -2,7 +2,6 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import authService from "@/features/auth/services/authService.js";
 
-
 const useLogin = (setIsLogin) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -12,13 +11,14 @@ const useLogin = (setIsLogin) => {
         e.preventDefault();
         try {
             const res = await authService.post("/api/auth/login", {email, password});
-            localStorage.setItem("accessToken", res.data.accessToken);
+            //localStorage.setItem("accessToken", res.data.accessToken);
             setIsLogin(true);
             navigate("/");
         } catch {
             alert("로그인 실패");
         }
     };
+
     return {
         onSubmit,
         setEmail,

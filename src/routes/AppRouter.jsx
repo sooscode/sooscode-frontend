@@ -1,9 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
-import authService from "@/features/auth/services/authService";
-
-// pages
-
+import { getCookie } from "@/utils/cookie";
 import StudentClassDetail from "../pages/classDetail/StudentClassDetail.jsx";
 import TeacherClassDetail from "../pages/classDetail/TeacherClassDetail.jsx";
 
@@ -21,8 +18,8 @@ export default function AppRouter() {
     const [isLogin, setIsLogin] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        setIsLogin(!!token);
+        const accessToken = getCookie("accessToken");
+        setIsLogin(!!accessToken);
     }, []);
 
   return (
