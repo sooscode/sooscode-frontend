@@ -13,7 +13,9 @@ const AuthLayout = ({setIsLogin}) => {
         }
 
         localStorage.removeItem("accessToken");
+        alert('로그아웃 되었습니다.')
         setIsLogin(false);
+
     };
 
     return (

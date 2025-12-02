@@ -1,20 +1,17 @@
 import axios from "axios";
+import { getCookie } from "@/utils/cookie";
 
 const authService = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
     withCredentials: true,
 });
 
-authService.interceptors.request.use(
-    (config) => {
-        const accessToken = localStorage.getItem("accessToken");
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+
+authService.interceptors.request.use(config => {
+    const accessToken = getCookie("accessToken");
+    config.headers.Authorization = `Bearer ${accessToken}`;
+    return config;
+});
 
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -53,7 +50,7 @@ authService.interceptors.response.use(
             const { data } = await authService.post("/api/auth/refresh");
             const newAccessToken = data.accessToken;
 
-            localStorage.setItem("accessToken", newAccessToken);
+            //localStorage.setItem("accessToken", newAccessToken);
 
             authService.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
             isRefreshing = false;
