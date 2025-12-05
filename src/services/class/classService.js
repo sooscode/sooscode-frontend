@@ -1,6 +1,6 @@
 // src/services/classService.js
 
-import { api } from "./api";
+import { api } from "../api";
 
 // 수업 정보 가져오기
 export async function fetchClassInfo(classId) {

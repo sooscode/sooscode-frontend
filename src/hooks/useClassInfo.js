@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { fetchClassInfo } from "../services/classService";
+import { fetchClassInfo } from "../services/class/classService";
 
+// 수업 정보 훅
+// classId: 수업 ID
+// 반환값: { data, loading, error }
 export function useClassInfo(classId) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

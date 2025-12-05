@@ -1,6 +1,6 @@
 /* PAGE WRAPPER */
 .app {
-  background-color: #36393f;
+  background-color: --bg-color-main;
   min-height: 100vh;
 }
 

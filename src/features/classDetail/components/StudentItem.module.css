@@ -1,0 +1,44 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #1d1d1d;
+  border-radius: 10px;
+  border: 1px solid #272727;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.row:hover {
+  background: #222;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #6c63ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.email {
+  color: #aaa;
+  font-size: 13px;
+}

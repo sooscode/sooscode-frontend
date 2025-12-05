@@ -1,0 +1,22 @@
+:global(*) {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.mainContent {
+  display:flex;
+  flex-direction:row;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  display: flex;
+  gap: 32px;
+}
+
+@media (max-width: 640px) {
+  .mainContent {
+    padding: 24px 16px;
+    gap: 24px;
+  }
+}
