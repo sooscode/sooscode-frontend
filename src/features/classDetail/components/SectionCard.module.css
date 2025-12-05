@@ -1,0 +1,52 @@
+.card {
+  width: 100%;
+  background:var(--bg-color-sub);
+  border-radius: 10px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.count {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.listItem{
+  background: var(--bg-color-primary);
+}
+.uploadBtn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #7649ff;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.uploadBtn:hover {
+  background: #5d33e6;
+}

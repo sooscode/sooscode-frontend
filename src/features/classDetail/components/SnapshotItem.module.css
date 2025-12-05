@@ -1,0 +1,32 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #1d1d1d;
+  border-radius: 10px;
+  border: 1px solid #272727;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: #222;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.date {
+  color: #999;
+  font-size: 13px;
+  margin-top: 2px;
+}

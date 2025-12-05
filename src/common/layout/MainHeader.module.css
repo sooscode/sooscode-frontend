@@ -1,5 +1,5 @@
 .header {
-  background-color: #2f3136;
+  background-color:--bg-color-sub;
   border-bottom: 1px solid #202225;
   padding: 16px 0;      /* 좌우 padding 제거 */
   width: 100%;
@@ -25,7 +25,7 @@
 }
 
 .logoText {
-  color: white;
+  color: --text-color-primary;
   font-family: Arial, sans-serif;
   font-size: 24px;
   white-space: nowrap;
@@ -34,7 +34,7 @@
 .pageTitle {
   font-family: 'Archivo', 'Noto Sans KR', sans-serif;
   font-weight: 900;
-  color: white;
+  color: --text-color-primary;
   font-size: 24px;
 }
 
