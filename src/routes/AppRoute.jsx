@@ -1,4 +1,4 @@
-// routes/AppRouter.jsx
+// routes/AppRoute.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
@@ -11,7 +11,6 @@ import Register from '@/pages/auth/Register';
 import Home from '@/pages/Home';
 import StudentClassroom from '@/pages/classroom/StudentClassroom';
 import InstructorClassroom from '@/pages/classroom/InstructorClassroom';
-//import AdminDashboard from '@/pages/admin/AdminDashboard';
 
 // Error Pages
 import Forbidden from '@/pages/error/Forbidden';
@@ -24,10 +23,15 @@ import ToastTest from '@/pages/test/ToastTest';
 import LoadingTest from '@/pages/test/LoadingTest';
 import ColorPalette from '@/pages/test/ColorPalette';
 
-export default function AppRouter() {
+export default function AppRoute() {
     return (
         <BrowserRouter>
             <Routes>
+                {/* Test - 개발용 */}
+                <Route path="/toast" element={<ToastTest />} />
+                <Route path="/loading" element={<LoadingTest />} />
+                <Route path="/color" element={<ColorPalette />} />
+
                 {/* Public - 비로그인 전용 */}
                 <Route element={<PublicRoute />}>
                     <Route path="/login" element={<Login />} />
@@ -40,14 +44,14 @@ export default function AppRouter() {
                 </Route>
 
                 {/* Private - 학생 전용 */}
-                <Route element={<PrivateRoute allowedRoles={['student']} />}>
-                    <Route path="/classroom/student" element={<StudentClassroom />} />
-                </Route>
+                {/*<Route element={<PrivateRoute allowedRoles={['STUDENT']} />}>*/}
+                    <Route path="/class/student" element={<StudentClassroom />} />
+                {/*</Route>*/}
 
                 {/* Private - 강사 전용 */}
-                <Route element={<PrivateRoute allowedRoles={['instructor']} />}>
-                    <Route path="/classroom/instructor" element={<InstructorClassroom />} />
-                </Route>
+                {/*<Route element={<PrivateRoute allowedRoles={['INSTRUCTOR']} />}>*/}
+                    <Route path="/class/instructor" element={<InstructorClassroom />} />
+                {/*</Route>*/}
 
                 {/* Private - 관리자 전용 */}
                 {/*<Route element={<PrivateRoute allowedRoles={['admin']} />}>*/}
@@ -59,11 +63,6 @@ export default function AppRouter() {
                 <Route path="/error/404" element={<NotFound />} />
                 <Route path="/error/500" element={<ServerError />} />
                 <Route path="/error" element={<ErrorPage />} />
-
-                {/* Test - 개발용 */}
-                <Route path="/toast" element={<ToastTest />} />
-                <Route path="/loading" element={<LoadingTest />} />
-                <Route path="/color" element={<ColorPalette />} />
 
                 {/* 404 - 매칭 안 되는 모든 경로 */}
                 <Route path="*" element={<NotFound />} />

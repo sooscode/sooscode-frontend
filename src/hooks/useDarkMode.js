@@ -1,6 +1,37 @@
-// hooks/useDarkMode.js
 import { useEffect } from 'react';
-import { useThemeStore } from '../store/themeStore';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+// 헬퍼 함수
+const applyTheme = (darkMode) => {
+    document.documentElement.setAttribute(
+        'data-theme',
+        darkMode ? 'dark' : 'light'
+    );
+};
+
+export const useThemeStore = create(
+    persist(
+        (set) => ({
+            darkMode: false,
+
+            setDarkMode: (darkMode) => {
+                set({ darkMode });
+                applyTheme(darkMode);
+            },
+
+            toggleDarkMode: () =>
+                set((state) => {
+                    const newDarkMode = !state.darkMode;
+                    applyTheme(newDarkMode);
+                    return { darkMode: newDarkMode };
+                }),
+        }),
+        {
+            name: 'theme-storage',
+        }
+    )
+);
 
 export const useDarkMode = () => {
     const darkMode = useThemeStore((state) => state.darkMode);
@@ -13,10 +44,7 @@ export const useDarkMode = () => {
 
         if (savedTheme) {
             const { state } = JSON.parse(savedTheme);
-            document.documentElement.setAttribute(
-                'data-theme',
-                state.darkMode ? 'dark' : 'light'
-            );
+            applyTheme(state.darkMode);
         } else {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             setDarkMode(prefersDark);
@@ -32,12 +60,14 @@ export const useDarkMode = () => {
 
 /**
  * 다크모드 커스텀 훅 사용법
- * 원하는 곳에서 const { darkMode, toggleDarkMode } = useDarkMode();를 호출
- *
- * event로 toggleDarkMode를 실행시키면 됨(버튼을 누를 때마다 반전 됨)
- * ex) <button onClick={toggleDarkMode} />
- *
- * darkMode의 값은 boolean 즉 true/false를 가지고 있는데 삼항 연산자로 라이트 모드인지 다크모드인지
- * 구분할 수 있음
- * ex) {darkMode ? '현재 다크모드' : '현재 라이트 모드'}
+ * // 훅 입포트
+ * import { useDarkMode } from "@/hooks/useDarkMode";
+ * // 훅 구조 분해 할당(안쓰는 건 안가져와도 됨)
+ * const { darkMode, toggleDarkMode, setDarkMode } = useDarkMode();
+ * // 모드 변경(반전 토글)
+ * <button onClick={toggleDarkMode}>모드 변경</button>
+ * // 모드 변경(선택 true/false)
+ * <button onClick={() => setDarkMode(true)}>다크모드</button>
+ * // 모드 확인 다크모드(true)/라이트모드(false)
+ * <div>{darkMode ? "🌙" : "☀️"}</div>
  */

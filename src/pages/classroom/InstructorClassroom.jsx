@@ -10,7 +10,7 @@ import OutputPanel from "@/features/classroom/OutputPanel.jsx";
 import TabButton from "@/features/classroom/TabButton.jsx";
 import SnapshotList from "@/features/snapshot/SnapshotList.jsx";
 import {ChatIcon} from "@livekit/components-react";
-import {UsersIcon} from "@/common/components/Icons.jsx";
+import {UsersIcon} from "@/common/components/utils/Icons.jsx";
 
 // 임시 데이터
 const mockStudents = [

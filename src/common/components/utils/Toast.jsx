@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useToastStore } from '@/store/toastStore.js';
+import { useToastStore } from "@/hooks/useToast.js";  // ★ 수정!
 import styles from './Toast.module.css';
 
 const ToastItem = ({ toast, onRemove }) => {
@@ -25,8 +25,8 @@ const ToastItem = ({ toast, onRemove }) => {
 };
 
 const Toast = () => {
-    const toasts = useToastStore((state) => state.toasts);
-    const removeToast = useToastStore((state) => state.removeToast);
+    const toasts = useToastStore((state) => state.toasts);       // ★ 수정
+    const removeToast = useToastStore((state) => state.removeToast); // ★ 수정
 
     return (
         <div className={styles.toastContainer}>

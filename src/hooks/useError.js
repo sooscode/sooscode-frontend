@@ -1,6 +1,6 @@
 // hooks/useError.js
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store/user/userStore';
 
 export const useError = () => {
     const navigate = useNavigate();
@@ -44,3 +44,27 @@ export const useError = () => {
 
     return { handleError };
 };
+
+/**
+ * 글로벌 에러 핸들링 커스텀 훅
+ *
+ * Axios 요청 실패 시 상태 코드(401,403,404,500 등)에 따라
+ * 자동으로 페이지 이동을 수행하는 에러 처리 훅
+ *
+ * // 훅 import
+ * import { useError } from "@/hooks/useError";
+ * // 구조 분해 할당
+ * const { handleError } = useError();
+ * // 에러 처리 예시
+ * try {
+ *     const res = await api.get("/mypage");
+ * } catch (err) {
+ *     handleError(err); // 상태코드 기반 라우팅 처리
+ * }
+ * // 상태코드 분기
+ * 401 → 로그인 필요
+ * 403 → 권한 없음
+ * 404 → 페이지 없음
+ * 500 → 서버 오류
+ * 기타 → 공용 에러 페이지 이동
+ */

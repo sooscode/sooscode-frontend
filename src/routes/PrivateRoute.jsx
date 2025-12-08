@@ -1,9 +1,9 @@
 // routes/PrivateRoute.jsx
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUserStore } from '@/store/userStore';
+import { useUser } from "@/hooks/useUser.js";
 
 const PrivateRoute = ({ allowedRoles }) => {
-    const user = useUserStore((state) => state.user);
+    const { user } = useUser();
 
     if (!user) {
         return <Navigate to="/login" replace />;

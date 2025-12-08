@@ -1,5 +1,5 @@
 // common/components/classroom/ClassHeader.jsx
-import { SettingIcon, BroadcastIcon, CameraIcon, UserIcon } from '@/common/components/Icons';
+import { SettingIcon, BroadcastIcon, CameraIcon, UserIcon } from '@/common/components/utils/Icons';
 import styles from './ClassHeader.module.css';
 
 const ClassHeader = ({ 

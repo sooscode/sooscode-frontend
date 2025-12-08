@@ -1,8 +1,8 @@
-import { useLoadingStore } from '@/store/loadingStore.js';
+import { useLoading } from '@/hooks/useLoading';
 import styles from './GlobalLoading.module.css';
 
 const GlobalLoading = () => {
-    const loading = useLoadingStore((state) => state.loading);
+    const { loading} = useLoading();
 
     if (!loading) return null;
 

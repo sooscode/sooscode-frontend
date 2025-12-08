@@ -1,4 +1,24 @@
-import { useToastStore } from '@/store/toastStore.js';
+import { create } from 'zustand';
+
+export const useToastStore = create((set) => ({
+    toasts: [],
+    addToast: (toast) =>
+        set((state) => ({
+            toasts: [
+                ...state.toasts,
+                {
+                    id: Date.now() + Math.random(),
+                    type: toast.type || 'info',
+                    message: toast.message,
+                    duration: toast.duration || 3000,
+                },
+            ],
+        })),
+    removeToast: (id) =>
+        set((state) => ({
+            toasts: state.toasts.filter((toast) => toast.id !== id),
+        })),
+}));
 
 export const useToast = () => {
     const addToast = useToastStore((state) => state.addToast);
@@ -20,15 +40,20 @@ export const useToast = () => {
 };
 
 /**
- * 토스트 커스텀 훅 사용법
- * const toast = useToast();로 커스텀 훅 호출
+ * 전역 토스트 알림 커스텀 훅
  *
- * 이벤트로 실행
- * ex) <button onClick={() => toast.success("원하는 메시지")} />
+ * success / error / warning / info 타입의 알림 메시지 훅
  *
- * 메시지 타입은 다음과 같음
- * toast.success/error/warning/info
- *
- * 알림 유지시간은 기본 3초 시간도 커스텀 가능 | 5초면 == 5000(ms 기준)
- * ex) <button onClick={() => toast.info("안녕하세요 sooscode입니다", 5000)} />
+ * // 훅 import
+ * import { useToast } from "@/hooks/useToast";
+ * // 구조 분해 할당
+ * const toast = useToast();
+ * // 사용 예시
+ * toast.success("저장되었습니다");
+ * toast.error("요청 실패");
+ * toast.info("안내 메시지", 5000); // 유지시간(ms) 지정 가능
+ * // 메시지 타입
+ * toast.success / toast.error / toast.warning / toast.info
+ * // 토스트 UI는 전역 ToastContainer 컴포넌트에서
+ * // useToastStore(state => state.toasts)를 기반으로 렌더링하면 됨
  */

@@ -1,10 +1,10 @@
 // common/components/classroom/ChatPanel.jsx
 import { useState } from 'react';
-import { SendIcon } from '@/common/components/Icons';
+import { SendIcon } from '@/common/components/utils/Icons';
 import styles from './ChatPanel.module.css';
 
 const ChatPanel = ({ 
-    messages, 
+    messages,
     onSendMessage, 
     currentUserType = 'student' // 'student' | 'teacher'
 }) => {

@@ -1,9 +1,9 @@
 // routes/PublicRoute.jsx
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUserStore } from '@/store/userStore';
+import { useUser } from "@/hooks/useUser.js";
 
 const PublicRoute = () => {
-    const user = useUserStore((state) => state.user);
+    const { user } = useUser();
 
     if (user) {
         return <Navigate to="/" replace />;
