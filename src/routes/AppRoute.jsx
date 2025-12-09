@@ -31,6 +31,7 @@ import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx
 import ChatPanel from "@/features/chat/ChatPanel.jsx";
 // 수빈 테스트
 import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
+import AdminPage from "@/pages/admin/AdminPage.jsx";
 
 
 export default function AppRoute() {
@@ -45,6 +46,8 @@ export default function AppRoute() {
                 <Route path={"/chat"} element={<ChatPanel/>}/>
 
                 <Route path="/logout" element={<LogoutButton />} />
+
+                <Route path="/admin" element={<AdminPage />} />
 
 
                 {/* Public - 비로그인 전용 */}
