@@ -15,4 +15,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+        server: {
+            proxy: {
+                "/ws": {
+                    target: "http://localhost:8080",
+                    ws: true,
+                    changeOrigin: true,
+                },
+            },
+        },
+    define: {
+        global: {},   //  이 한 줄이 핵심!
+    },
 });
