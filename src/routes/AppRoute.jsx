@@ -31,7 +31,11 @@ import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx
 import ChatPanel from "@/features/chat/ChatPanel.jsx";
 // 수빈 테스트
 import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
+// 현영 테스트
+import AdminPage from "@/pages/admin/AdminPage.jsx";
+// 효상 테스트
 import CodePractice from '../pages/classdetail/CodePractice.jsx';
+
 
 
 export default function AppRoute() {
@@ -43,6 +47,8 @@ export default function AppRoute() {
                 <Route path="/loading" element={<LoadingTest />} />
                 <Route path="/color" element={<ColorPalette />} />
                 <Route path="/logout" element={<LogoutButton />} />
+
+                <Route path="/admin" element={<AdminPage />} />
 
 
                 {/* Public - 비로그인 전용 */}
