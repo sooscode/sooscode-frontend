@@ -1,42 +1,102 @@
-/* pages/classroom/InstructorClassroom.module.css */
 .container {
-    display: flex;
-    flex-direction: column;
     height: 100vh;
-    background-color: var(--color-bg-primary);
+    overflow: hidden;
+}
+
+/* ============================================
+   토글 버튼 (라이트 모드 기준 밝은 톤으로 전체 교체)
+   ============================================ */
+.toggleBtn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 299px;
+    width: 24px;
+    height: 120px;
+
+    /* 기존: var(--color-gray-800) → 너무 어두움 */
+    background: var(--color-bg-secondary);
+
+    /* 기존: border-dark → 너무 어두움 */
+    border: 1px solid var(--color-border-medium);
+
+    border-radius: 0 var(--radius-base) var(--radius-base) 0;
+
+    /* 기존: tertiary(회색) → 라이트 모드에 더 어울리는 텍스트 */
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+    z-index: 95;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: var(--font-size-sm);
+    padding: 0;
+
+    transition:
+            left var(--transition-slow),
+            background var(--transition-base);
+
+    box-shadow: var(--shadow-sm);
+}
+
+/* Hover */
+.toggleBtn:hover {
+    background: var(--color-bg-tertiary);
     color: var(--color-text-primary);
 }
 
-.main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
+/* 접힘 시 버튼 위치 */
+.sidebar.collapsed ~ .toggleBtn {
+    left: -1px;
+    border-left: 1px solid var(--color-border-medium);
 }
 
-.content {
-    flex: 1;
-    display: flex;
-    gap: var(--spacing-1);
-    padding: var(--spacing-2);
-    background-color: var(--color-bg-tertiary);
-    overflow: hidden;
+/* ============================================
+   메인 스크롤 영역 – 밝은 톤으로 변경
+   ============================================ */
+.scrollArea {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+
+    /* 기존: gray-900 → 어둠의 끝 */
+    background: var(--color-bg-tertiary);
+
+    transition: left var(--transition-slow);
 }
 
-.panel {
-    flex: 1;
+/* ============================================
+   페이지 단위 (변경 없음)
+   ============================================ */
+.page {
+    height: calc(100vh - 60px);
+    scroll-snap-align: start;
     display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg-primary);
-    border-radius: var(--radius-base);
-    overflow: hidden;
-    border: 1px solid var(--color-border-light);
-}
-
-.panelHeader {
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: var(--spacing-2) var(--spacing-4);
-    background-color: var(--color-bg-secondary);
-    border-bottom: 1px solid var(--color-border-light);
+}
+
+/* ============================================
+   컨텐츠 카드 – 완전한 라이트톤 기반
+   ============================================ */
+.content {
+    width: 100%;
+    height: 100%;
+
+    /* 기존: gray-800 → 라이트에서 너무 어둢다 */
+    background: var(--color-bg-primary);
+
+    padding: var(--spacing-6);
+
+    /* 기존: inverse(white) → 밝은 배경에서 보이지 않음 */
+    color: var(--color-text-primary);
+
+    box-shadow: var(--shadow-sm);
 }
