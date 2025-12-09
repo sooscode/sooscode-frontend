@@ -22,6 +22,7 @@ import ErrorPage from '@/pages/error/ErrorPage';
 import ToastTest from '@/pages/test/ToastTest';
 import LoadingTest from '@/pages/test/LoadingTest';
 import ColorPalette from '@/pages/test/ColorPalette';
+import ChatPanel from "@/features/chat/ChatPanel.jsx";
 
 export default function AppRoute() {
     return (
@@ -31,6 +32,7 @@ export default function AppRoute() {
                 <Route path="/toast" element={<ToastTest />} />
                 <Route path="/loading" element={<LoadingTest />} />
                 <Route path="/color" element={<ColorPalette />} />
+                <Route path={"/chat"} element={<ChatPanel/>}/>
 
                 {/* Public - 비로그인 전용 */}
                 <Route element={<PublicRoute />}>
