@@ -1,9 +1,9 @@
-// features/auth/components/LoginForm.jsx
-import { Link } from 'react-router-dom';
-import { FiMail, FiLock } from 'react-icons/fi';
-import useLogin from '../hooks/useLogin';
-import styles from './AuthForm.module.css';
-import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
+// src/features/auth/components/LoginForm.jsx
+import { Link } from "react-router-dom";
+import { FiMail, FiLock } from "react-icons/fi";
+import useLogin from "../hooks/useLogin";
+import LogoutButton from "./base/LogoutButton";
+import styles from "./AuthForm.module.css";
 
 const LoginForm = () => {
     const {
@@ -18,7 +18,7 @@ const LoginForm = () => {
 
     return (
         <>
-            <LogoutButton />
+
             <h2 className={styles.title}>로그인</h2>
             <p className={styles.subtitle}>SOO'S CODE에 오신 것을 환영합니다.</p>
 
@@ -53,12 +53,8 @@ const LoginForm = () => {
                     </div>
                 </div>
 
-                <button
-                    type="submit"
-                    className={styles.primaryButton}
-                    disabled={loading}
-                >
-                    {loading ? '로그인 중...' : '로그인'}
+                <button type="submit" className={styles.primaryButton} disabled={loading}>
+                    {loading ? "로그인 중..." : "로그인"}
                 </button>
 
                 <div className={styles.dividerArea}>
@@ -70,13 +66,18 @@ const LoginForm = () => {
                 <button
                     type="button"
                     className={styles.googleButton}
-                    onClick={() => window.location.href = "http://localhost:8080/api/auth/google/login"}
+                    onClick={() =>
+                        (window.location.href = "http://localhost:8080/api/auth/google/login")
+                    }
                 >
                     Google로 계속하기
                 </button>
 
                 <p className={styles.footerText}>
-                    계정이 없으신가요? <Link className={styles.link} to="/register">회원가입</Link>
+                    계정이 없으신가요?{" "}
+                    <Link className={styles.link} to="/register">
+                        회원가입
+                    </Link>
                 </p>
             </form>
         </>

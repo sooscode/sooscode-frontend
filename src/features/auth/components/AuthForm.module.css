@@ -66,8 +66,8 @@
     padding: var(--spacing-3) 0;
     background: linear-gradient(
             90deg,
-            var(--color-primary-600),
-            var(--color-primary-700)
+            var(--color-primary-500),
+            var(--color-primary-600)
     );
     border-radius: var(--radius-base);
     font-size: var(--font-size-base);
@@ -137,7 +137,7 @@
 }
 
 .link {
-    color: var(--color-primary-600);
+    color: var(--color-primary-500);
     font-weight: var(--font-weight-semibold);
     text-decoration: none;
 }

@@ -1,38 +1,34 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// src/features/auth/components/base/LogoutButton.jsx
+import useLogout from "../../hooks/useLogout";
+
 const LogoutButton = () => {
-    const [isLogin, setIsLogin] = useState(false);
-    const navigate = useNavigate();
+    const { logout } = useLogout();
 
-    // 마운트 시 현재 로그인 여부 체크
-    useEffect(() => {
-        const checkLogin = async () => {
-            try {
-                await authApi.get("/api/auth/me"); // 200 나오면 로그인 상태
-                setIsLogin(true);
-            } catch {
-                setIsLogin(false);
-            }
-        };
-
-        checkLogin();
-    }, []);
-
-    const onLogout = async () => {
-        try {
-            await authApi.post("/api/auth/logout"); // 서버가 쿠키 삭제 + RT 제거
-        } catch (e) {
-            console.log("로그아웃 API 실패", e);
-        } finally {
-            setIsLogin(false);
-            navigate("/");
-        }
+    const buttonStyle = {
+        backgroundColor: "#ff4d4f",  // 선명한 레드
+        color: "#fff",
+        border: "none",
+        padding: "10px 16px",
+        borderRadius: "6px",
+        cursor: "pointer",
+        fontSize: "14px",
+        fontWeight: "600",
+        marginBottom: "20px",
+        width: "100%",
+        transition: "0.2s ease",
     };
 
-    if (!isLogin) return null; // 안 로그인 상태면 버튼 안 보이게
+    const hoverStyle = {
+        backgroundColor: "#d9363e",
+    };
 
     return (
-        <button onClick={onLogout}>
+        <button
+            onClick={logout}
+            style={buttonStyle}
+            onMouseOver={(e) => (e.target.style.backgroundColor = hoverStyle.backgroundColor)}
+            onMouseOut={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+        >
             로그아웃
         </button>
     );
