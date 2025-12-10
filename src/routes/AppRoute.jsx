@@ -55,6 +55,8 @@ export default function AppRoute() {
                 <Route path="/classdetail/instructor" element={<InstructorClassDetail />} />
                 <Route path="/codepractice" element={<CodePracticePage />} />
 
+                <Route path="/" element={<Home />} />
+
                 {/* Public - 비로그인 전용 */}
                 <Route element={<PublicRoute />}>
                     <Route path="/login" element={<Login />} />
@@ -80,6 +82,12 @@ export default function AppRoute() {
                 {/*<Route element={<PrivateRoute allowedRoles={['admin']} />}>*/}
                 {/*    <Route path="/admin" element={<AdminDashboard />} />*/}
                 {/*</Route>*/}
+
+                {/* Error Pages */}
+                <Route path="/error/403" element={<Forbidden />} />
+                <Route path="/error/404" element={<NotFound />} />
+                <Route path="/error/500" element={<ServerError />} />
+                <Route path="/error" element={<ErrorPage />} />
 
                 {/* 404 - 매칭 안 되는 모든 경로 */}
                 <Route path="*" element={<NotFound />} />
