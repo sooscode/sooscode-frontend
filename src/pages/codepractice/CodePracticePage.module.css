@@ -1,0 +1,4 @@
+.ContentWrapper{
+  display:flex;
+  flex-direction:column;
+}
