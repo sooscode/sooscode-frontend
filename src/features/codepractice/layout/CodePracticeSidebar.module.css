@@ -1,5 +1,8 @@
-.sidebarContainer{
-  width:20%;
-  height:100%;
-  background-color:white;
+.sidebarContainer {
+  display: flex;
+  width: 20%;
+  margin: var(--spacing-1);
+  border-radius: var(--radius-base);
+  border: 2px solid var(--color-border-light);
+  background: var(--color-bg-primary);
 }

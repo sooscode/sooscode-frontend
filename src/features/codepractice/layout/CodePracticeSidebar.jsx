@@ -1,4 +1,4 @@
-import styles from "./CodePracticeHeader.module.css";
+import styles from "./CodePracticeSidebar.module.css";
 
 export default function CodePracticeSidebar(){
   return(

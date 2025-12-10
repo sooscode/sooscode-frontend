@@ -1,4 +1,16 @@
-.ContentWrapper{
-  display:flex;
-  flex-direction:column;
+.PageWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  min-height: 0;
+  background-color:var(--color-bg-primary);
+}
+
+.ContentWrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background-color:var(--color-bg-primary);
 }
