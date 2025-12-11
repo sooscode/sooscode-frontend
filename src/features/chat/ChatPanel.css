@@ -175,3 +175,50 @@
     font-size: 12px;
     color: #888;
 }
+.chat-content-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.chat-content {
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.chat-time {
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/*입장 초록, 퇴장 빨강*/
+.chat-system-notice {
+    width: 100%;
+    text-align: center;
+    margin: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.9;
+}
+
+.chat-system-notice.enter {
+    color: #22c55e; /* 초록 */
+}
+
+.chat-system-notice.exit {
+    color: #ef4444; /* 빨강 */
+}
+
+.system-time {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+
+

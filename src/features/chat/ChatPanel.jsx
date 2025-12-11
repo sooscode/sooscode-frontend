@@ -240,6 +240,17 @@ export default function ChatPanel({ classId = 1 }) {
 
         return `${ampm} ${hours}:${minutes}`;
     };
+    // 날짜만 포맷 (MM-DD)
+    const formatDateOnly = (iso) => {
+        if (!iso) return "";
+
+        const date = new Date(iso);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${month}-${day}`;
+    };
+
 
 
 
@@ -267,6 +278,9 @@ export default function ChatPanel({ classId = 1 }) {
                         //   [추가] 시스템 메시지(입장/퇴장)인지 판별
                         const isSystem =
                             msg.type === "ENTER" || msg.type === "EXIT";
+                        const isEnter = msg.type === "ENTER";
+                        const isExit = msg.type === "EXIT";
+
 
                         const mine = msg.email === myEmail;
 
@@ -284,22 +298,32 @@ export default function ChatPanel({ classId = 1 }) {
                         const isNewDate = idx === 0 || prevDateKey !== currentDateKey;
 
                         //  첫 메시지면 날짜+시간, 아니면 시간만
-                        const formattedDateTime = isNewDate
-                            ? formatDateTime(created)   //  MM-DD AM 3:21
-                            : formatTimeOnly(created);  //  AM 3:21
+                        const dateDividerText = isNewDate && created
+                            ? formatDateOnly(created)  // "12-11"
+                            : null;
 
 
                         //  ENTER / EXIT 같은 시스템 메세지 UI
                         if (isSystem) {
                             return (
                                 <React.Fragment key={idx}>
-                                    {formattedDateTime && (
+                                    {dateDividerText && (
                                         <div className="chat-date-divider">
-                                            {formattedDateTime}
+                                            {dateDividerText}
                                         </div>
                                     )}
-                                    <div className="chat-system-message">
-                                        {msg.content}
+                                    {/*  입장 / 퇴장 전용 시스템 알림 */}
+                                    <div
+                                        className={`chat-system-notice ${
+                                            isEnter ? "enter" : "exit"
+                                        }`}
+                                    >
+                                        <span className="system-text">{msg.content}</span>
+                                        {created && (
+                                            <span className="chat-time">
+                                                {formatTimeOnly(created)}
+                                            </span>
+                                        )}
                                     </div>
                                 </React.Fragment>
                             );
@@ -309,7 +333,7 @@ export default function ChatPanel({ classId = 1 }) {
                             <React.Fragment key={idx}>
 
                                     <div className="chat-date-divider">
-                                        {formattedDateTime}
+                                        {dateDividerText}
                                     </div>
 
 
@@ -323,6 +347,7 @@ export default function ChatPanel({ classId = 1 }) {
                                     )}
 
                                     <div className="chat-content">{msg.content}</div>
+                                    <div className="chat-time">{formatTimeOnly(created)}</div>
 
                                     <div className="chat-actions">
                                         <button
@@ -347,7 +372,7 @@ export default function ChatPanel({ classId = 1 }) {
                 <input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="메시지 입력..."
+                    placeholder="메시지를 입력하세요"
                 />
                 <button type="submit">전송</button>
             </form>
