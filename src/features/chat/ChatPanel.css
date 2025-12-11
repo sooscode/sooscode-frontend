@@ -1,4 +1,4 @@
-/* ✅ 전체 채팅 패널 (고정 크기, 라이트 모드) */
+/*  전체 채팅 패널 (고정 크기, 라이트 모드) */
 .chat-sidebar {
     width: 267px;
     height: 845px;
@@ -11,7 +11,7 @@
     border: 1px solid var(--color-border-light);
 }
 
-/* ✅ 상단 헤더 */
+/*  상단 헤더 */
 .chat-sidebar__header {
     height: 56px;
     background: var(--color-bg-secondary);
@@ -25,7 +25,7 @@
     border-bottom: 1px solid var(--color-border-light);
 }
 
-/* ✅ 메시지 영역 */
+/*  메시지 영역 */
 .chat-sidebar__messages {
     flex: 1;
     padding: var(--spacing-4) var(--spacing-3);
@@ -36,7 +36,7 @@
     background: var(--color-bg-primary);
 }
 
-/* ✅ 말풍선 공통 */
+/*  말풍선 공통 */
 .chat-bubble {
     display: flex;
     flex-direction: column;
@@ -46,25 +46,25 @@
     gap: 4px;
 }
 
-/* ✅ 내 채팅 오른쪽으로 완전히 보내기 */
+/*  내 채팅 오른쪽으로 완전히 보내기 */
 .chat-bubble.mine {
     align-items: flex-end;
-    margin-left: auto;   /* ✅ 오른쪽 정렬 핵심 */
+    margin-left: auto;   /*  오른쪽 정렬 핵심 */
 }
 
-/* ✅ 내 채팅 말풍선: 검정색 */
+/*  내 채팅 말풍선: 검정색 */
 .chat-bubble.mine .chat-content {
-    background: #111;   /* ✅ 완전 검정 */
+    background: #111;   /*  완전 검정 */
     color: #fff;
     border-radius: 14px 14px 0 14px;
 }
 
-/* ✅ 내 채팅 공감 영역도 오른쪽 정렬 */
+/*  내 채팅 공감 영역도 오른쪽 정렬 */
 .chat-bubble.mine .chat-actions {
     justify-content: flex-end;
 }
 
-/* ✅ 상대 채팅 */
+/*  상대 채팅 */
 .chat-bubble.other {
     align-items: flex-start;
 }
@@ -75,21 +75,21 @@
     border-radius: 14px 14px 14px 0;
 }
 
-/* ✅ 유저 이름 */
+/*  유저 이름 */
 .chat-username {
     font-size: 11px;
     color: var(--color-text-tertiary);
     margin-left: 4px;
 }
 
-/* ✅ 본문 */
+/*  본문 */
 .chat-content {
     padding: 8px 12px;
     font-size: var(--font-size-xs);
     word-break: break-word;
 }
 
-/* ✅ 공감 영역 */
+/*  공감 영역 */
 .chat-actions {
     display: flex;
     align-items: center;
@@ -115,7 +115,7 @@
     color: var(--color-text-tertiary);
 }
 
-/* ✅ 하단 입력 영역 */
+/*  하단 입력 영역 */
 .chat-sidebar__input {
     height: 64px;
     border-top: 1px solid var(--color-border-light);
@@ -126,7 +126,7 @@
     background: var(--color-bg-secondary);
 }
 
-/* ✅ 입력창 */
+/*  입력창 */
 .chat-sidebar__input input {
     flex: 1;
     height: 36px;
@@ -143,7 +143,7 @@
     color: var(--color-text-tertiary);
 }
 
-/* ✅ 전송 버튼 */
+/* 전송 버튼 */
 .chat-sidebar__input button {
     width: 52px;
     height: 36px;
@@ -161,7 +161,7 @@
     background: var(--color-primary-600);
 }
 
-/* ✅ 스크롤바 */
+/* 스크롤바 */
 .chat-sidebar__messages::-webkit-scrollbar {
     width: 6px;
 }
@@ -175,3 +175,50 @@
     font-size: 12px;
     color: #888;
 }
+.chat-content-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.chat-content {
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.chat-time {
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/*입장 초록, 퇴장 빨강*/
+.chat-system-notice {
+    width: 100%;
+    text-align: center;
+    margin: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.9;
+}
+
+.chat-system-notice.enter {
+    color: #22c55e; /* 초록 */
+}
+
+.chat-system-notice.exit {
+    color: #ef4444; /* 빨강 */
+}
+
+.system-time {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+
+
