@@ -7,6 +7,8 @@ export default function ChatPanel({ classId = 1 }) {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
 
+    const [replyTarget, setReplyTarget] = useState("")
+
     const bottomRef = useRef(null);
     const prevLengthRef = useRef(0); //  새 메시지일 때만 스크롤용
 
@@ -19,6 +21,10 @@ export default function ChatPanel({ classId = 1 }) {
     const { user } = useUser();
 
     const [activeMenuId, setActiveMenuId] = useState(null); // 어떤 버블의 ··· 메뉴가 열려있는지
+
+    const messageRefs = useRef({}); // chaid를 DOM element로
+    const [highlightId, setHighlightId] = useState(null);
+
 
     //  스크롤 할 때마다 "지금 맨 아래인지" 계산
     const handleScroll = () => {
@@ -37,27 +43,35 @@ export default function ChatPanel({ classId = 1 }) {
     useEffect(() => {
         if (!connected || !myName) return
 
+        if (document.visibilityState !== "visible") return;
+
         //  입장 알림
         publish(`/app/chat/${classId}/enter`, {});
 
-        //  언마운트 / 연결 끊길 때 퇴장 알림
-        return () => {
-            publish(`/app/chat/${classId}/exit`, {});
-        };
+
     }, [connected, classId, myName, publish]);
 
-    //  브라우저 종료 / 새로고침
     useEffect(() => {
-        const handleUnload = () => {
-            publish(`/app/chat/${classId}/exit`, {});
+        const handleVisibility = () => {
+            if (!connected || !myName) return;
+
+            const isVisible = document.visibilityState === "visible";
+
+            if (!isVisible) {
+                // 이 탭을 떠났을 때 (다른 탭, 창 닫기, Alt+F4, 다른 사이트 등)
+                publish(`/app/chat/${classId}/exit`, {});
+            } else {
+                // 다시 이 탭으로 돌아왔을 때
+                publish(`/app/chat/${classId}/enter`, {});
+            }
         };
 
-        window.addEventListener("beforeunload", handleUnload);
-
+        document.addEventListener("visibilitychange", handleVisibility);
         return () => {
-            window.removeEventListener("beforeunload", handleUnload);
+            document.removeEventListener("visibilitychange", handleVisibility);
         };
-    }, [classId, publish]);
+    }, [connected, myName, classId, publish]);
+
 
     //  히스토리 불러오기
     useEffect(() => {
@@ -176,10 +190,12 @@ export default function ChatPanel({ classId = 1 }) {
             classId,
             content: inputValue,
             createdAt: new Date().toISOString(),
+            replyToChatId: replyTarget?.chatId ?? null,
         };
 
         publish(`/app/chat/${classId}`, payload);
         setInputValue("");
+        setReplyTarget(null); //  한 번 보내고 나면 reply 상태 초기화
     };
     const handleDelete = (chatId) => {
         if (!window.confirm("이 메시지를 삭제할까요?")) return;
@@ -190,6 +206,32 @@ export default function ChatPanel({ classId = 1 }) {
 
         setActiveMenuId(null);
     };
+    //답장 시작
+    const handleReply = (msg => {
+        setReplyTarget({
+            chatId: msg.chatId,
+            name:msg.name,
+            content:msg.content,
+        })
+
+        // 선택 사항: 입력창에 @이름 미리 넣기
+        //     setInputValue((prev) => (prev ? prev : `@${msg.name} `));
+    })
+
+    //언급한 채팅 누르면 언급된 채팅내용부분으로 이동, 1.2초하이라이트
+    const scrollToMessage = (chatId) => {
+        if(!chatId) return;
+
+        const el = messageRefs.current[chatId];
+        if(el){
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+            setHighlightId(chatId);
+            setTimeout(() => setHighlightId(null), 1200)
+        }
+    }
 
 
     //  공감 전송 (이제 UI 직접 set 안 함 — WebSocket으로만 반영)
@@ -345,7 +387,35 @@ export default function ChatPanel({ classId = 1 }) {
                                     </div>
                                 )}
 
-                                <div className={`chat-bubble ${mine ? "mine" : "other"}`}>
+                                <div
+                                    ref={(el) => {
+                                        if (el) {
+                                            messageRefs.current[msg.chatId] = el;
+                                        }
+                                    }}
+                                    className={`chat-bubble ${mine ? "mine" : "other"} ${
+                                        highlightId === msg.chatId ? "chat-bubble--highlight" : ""
+                                    }`}
+                                >
+                                    {msg.replyToChatId && (
+                                        <div
+                                            className="chat-reply-preview"
+                                            onClick={()=> scrollToMessage(msg.replyToChatId)}
+                                        >
+                                            <div className="chat-reply-preview-header">
+                                                <span className="chat-reply-preview-name">
+                                                    {msg.replyToName ?? "알 수 없음"}
+                                                </span>
+                                            </div>
+                                            <div className="chat-reply-preview-content">
+                                                {msg.replyToContent ??
+                                                    (msg.replyToContent && msg.replyToContent.length > 10
+                                                        ? msg.replyToContent.slice(0, 40) + "..."
+                                                        : msg.replyToContent)}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {!mine && (
                                         <div className="chat-username">
                                             {msg.name}
@@ -365,11 +435,11 @@ export default function ChatPanel({ classId = 1 }) {
                                             ✅
                                         </button>
                                         <span className="chat-react-count">
-                    {msg.reactionCount ?? 0}
-                </span>
+                                            {msg.reactionCount ?? 0}
+                                        </span>
 
-                                        {/* ✅ 내 메시지(mine)일 때만 ··· 메뉴 표시 */}
-                                        {mine && (
+                                        {/*  내 메시지(mine)일 때만 ··· 메뉴 표시 */}
+
                                             <div className="chat-actions-more">
                                                 {/* 세 점 버튼 */}
                                                 <button
@@ -385,19 +455,33 @@ export default function ChatPanel({ classId = 1 }) {
                                                     ···
                                                 </button>
 
-                                                {/* 드롭다운 메뉴 */}
+
                                                 {activeMenuId === msg.chatId && (
                                                     <div className="chat-more-menu">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleDelete(msg.chatId)}
-                                                        >
-                                                            삭제
-                                                        </button>
+                                                        {mine ? (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleDelete(msg.chatId)}
+                                                            >
+                                                                삭제
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    handleReply(msg);
+                                                                    setActiveMenuId(null); // 메뉴 닫기
+                                                                }}
+                                                            >
+                                                                답장하기
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
-                                        )}
+
+
+
                                     </div>
                                 </div>
                             </React.Fragment>
