@@ -1,7 +1,6 @@
-// hooks/useUser.js (또는 stores/useUser.js)
+// hooks/useUser.js
 import { create } from "zustand";
-import {api} from "@/services/api.js";
-import {useLoading} from "@/hooks/useLoading.js";
+import { api } from "@/services/api.js";
 
 /**
  * 사용자 권한 ENUM
@@ -45,36 +44,44 @@ const userStore = create((set) => ({
 
     setUser: (userData) => {
         const user = validateUser(userData);
-        if (!user) {
-            return;
-        }
+        if (!user) return;
         set({ user });
     },
 
     clearUser: () => set({ user: null }),
 
-    fetchUser: async () => {
+    /**
+     * 앱 초기화 시 인증 상태 확인
+     * 1. me 요청 시도
+     * 2. 실패하면 refresh 후 재시도
+     * 3. 둘 다 실패하면 로그아웃 상태
+     */
+    initAuth: async () => {
         try {
-            const result = await api.get('/api/auth/me');
+            const result = await api.get("/api/me");
             const user = validateUser(result.data);
-
-            console.log(user);
-            set({ user, loading: false });
+            set({ user });
         } catch (error) {
-            console.error(error.message);
-            set({ user: null, loading: false });
+            try {
+                await api.post("/api/me/refresh");
+                const result = await api.get("/api/me");
+                const user = validateUser(result.data);
+                set({ user });
+            } catch (refreshError) {
+                set({ user: null });
+            }
         }
     },
 }));
 
 /**
- *  유저 훅
+ * 유저 훅
  */
 export const useUser = () => ({
     user: userStore((state) => state.user),
     setUser: userStore((state) => state.setUser),
     clearUser: userStore((state) => state.clearUser),
-    fetchUser: userStore((state) => state.fetchUser),
+    initAuth: userStore((state) => state.initAuth),
 });
 
 /**
@@ -83,8 +90,9 @@ export const useUser = () => ({
  * // 훅 import
  * import { useUser } from "@/hooks/useUser";
  * // 구조 분해 할당 (필요한 것만 가져오면 됨)
- * const { user, setUser, clearUser } = useUser();
- * // 로그인 성공 시 유저 저장
+ * const { user, setUser, clearUser, initAuth } = useUser();
+ *
+ * // 로그인 성공 시 유저 저장 예시
  * setUser({
  *     email: "test@test.com",
  *     name: "홍길동",
@@ -100,4 +108,8 @@ export const useUser = () => ({
  * console.log(user?.role);
  * console.log(user?.profileImage);
  *
+ * // 인증 상태 확인
+ * if (user) {
+ *     // 로그인된 상태
+ * }
  */

@@ -11,20 +11,15 @@ import {useLoading} from "@/hooks/useLoading.js";
 
 export default function App() {
     useDarkMode();
-    const { fetchUser } = useUser();
+    const { initAuth } = useUser();
     const { showLoading, hideLoading } = useLoading();
-
     useEffect(() => {
-        const load = async () => {
+        const init = async () => {
             showLoading();
-            try {
-                await fetchUser();   // fetchUser() 끝날 때까지 대기
-            } finally {
-                hideLoading();       // 이후에 로딩 종료
-            }
+            await initAuth();
+            hideLoading();
         };
-
-        load();
+        init();
     }, []);
 
     return <>
