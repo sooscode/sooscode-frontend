@@ -16,7 +16,7 @@ export default function ChatPanel({ classId = 1 }) {
     //  WebSocket / STOMP
     const { connected, error, subscribe, publish } = useSocket(classId);
 
-    const { user, fetchUser } = useUser();
+    const { user } = useUser();
 
 
     //  스크롤 할 때마다 "지금 맨 아래인지" 계산
@@ -29,11 +29,6 @@ export default function ChatPanel({ classId = 1 }) {
 
         setIsAtBottom(distanceFromBottom < threshold);
     };
-
-    //  내 정보 가져오기
-    useEffect(() => {
-        fetchUser();
-    }, [fetchUser]);
 
     const myEmail = user?.email ?? null;
     const myName = user?.name ?? null;
