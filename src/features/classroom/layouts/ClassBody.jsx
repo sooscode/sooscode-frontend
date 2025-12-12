@@ -11,7 +11,7 @@ function CodeShare() {
     return null;
 }
 
-const ClassBody = ({isInstructor = false}) => {
+const ClassBody = ({isInstructor = false, classId}) => {
     const {collapsed} = useSidebar();
     const {editorInstance} = useCode();
     const [activeTab, setActiveTab] = useState('snapshot');
@@ -64,8 +64,8 @@ const ClassBody = ({isInstructor = false}) => {
 
                     {/* 왼쪽 패널 */}
                     <div className={`${styles.inner} ${styles.left}`} ref={leftRef}>
-                        <button className={styles.tab} > 내 코드 </button>
-                        <CodePanel/>
+                        <button className={styles.tab}> 내 코드</button>
+                        <CodePanel classId={classId}/>
                     </div>
 
 
@@ -91,17 +91,22 @@ const ClassBody = ({isInstructor = false}) => {
                             </button>
                         </div>
 
-                            {activeTab === 'snapshot' && (
-                                <div className={styles.panel}>
-                                    {<SnapshotPanel/>}
-                                </div>
-                            )}
-                            {activeTab === 'code' && (
-                                <div className={styles.panel2}>
-                                    <CodeSharePanel/>
-                                </div>
-                            )}
+                        <div
+                            className={styles.panel}
+                            style={{display: activeTab === 'snapshot' ? 'block' : 'none'}}
+                        >
+                            <SnapshotPanel/>
                         </div>
+
+                        <div
+                            className={styles.panel2}
+                            style={{display: activeTab === 'code' ? 'block' : 'none'}}
+                        >
+                            <CodeSharePanel classId={classId}/>
+                        </div>
+
+
+                    </div>
 
                 </div>
             </div>
