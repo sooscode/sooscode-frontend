@@ -9,8 +9,7 @@ import Register from '@/pages/auth/Register';
 
 // Private Pages
 import Home from '@/pages/Home';
-// import StudentClassroom from '@/pages/classroom/StudentClassroom';
-import Classroom from '@/pages/classroom/Classroom.jsx';
+import Classroom from '@/features/classroom/pages/ClassroomPage.jsx';
 
 // Error Pages
 import Forbidden from '@/pages/error/Forbidden';
@@ -23,20 +22,18 @@ import ToastTest from '@/pages/test/ToastTest';
 import LoadingTest from '@/pages/test/LoadingTest';
 import ColorPalette from '@/pages/test/ColorPalette';
 
-import Mypage from '@/pages/mypage/Mypage.jsx'
 import StudentClassDetail from '@/pages/classdetail/StudentClassDetail.jsx'
 import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx'
 
-// 윤서 테스트
-import ChatPanel from "@/features/chat/ChatPanel.jsx";
 // 수빈 테스트
 import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
 // 현영 테스트
-import AdminPage from "@/pages/admin/AdminPage.jsx";
+import AdminPage from "@/features/admin/layouts/AdminLayout.jsx";
 import CodePracticePage from '../pages/codepractice/CodePracticePage';
+import AdminClassPage from "@/features/admin/pages/AdminClassroomPage.jsx";
+import AdminUserPage from "@/features/admin/pages/AdminUserPage.jsx";
+import ClassJoinTest from "@/features/classroom/pages/ClassJoinTest.jsx";
 // 효상 테스트
-
-
 
 export default function AppRoute() {
     return (
@@ -50,12 +47,12 @@ export default function AppRoute() {
 
                 <Route path="/admin" element={<AdminPage />} />
                 
-                <Route path="/mypage" element={<Mypage />} />
                 <Route path="/classdetail/student" element={<StudentClassDetail />} />
                 <Route path="/classdetail/instructor" element={<InstructorClassDetail />} />
                 <Route path="/codepractice" element={<CodePracticePage />} />
 
                 <Route path="/" element={<Home />} />
+                <Route path="/classjoin" element={<ClassJoinTest />} />
 
                 {/* Public - 비로그인 전용 */}
                 <Route element={<PublicRoute />}>
@@ -65,22 +62,15 @@ export default function AppRoute() {
 
                 {/* Private - 로그인 필수 (공용) */}
                 {/*<Route element={<PrivateRoute />}>*/}
-
-                {/*</Route>*/}
-
-                {/* Private - 학생 전용 */}
-                {/*<Route element={<PrivateRoute allowedRoles={['STUDENT']} />}>*/}
-                {/*    <Route path="/class/student" element={<StudentClassroom />} />*/}
-                {/*</Route>*/}
-
-                {/* Private - 강사 전용 */}
-                {/*<Route element={<PrivateRoute allowedRoles={['INSTRUCTOR']} />}>*/}
-                    <Route path="/class" element={<Classroom />} />
+                    <Route path="/class/:encodedId" element={<Classroom />} />
                 {/*</Route>*/}
 
                 {/* Private - 관리자 전용 */}
-                {/*<Route element={<PrivateRoute allowedRoles={['admin']} />}>*/}
-                {/*    <Route path="/admin" element={<AdminDashboard />} />*/}
+                {/*<Route element={<PrivateRoute allowedRoles={['ADMIN']} />}>*/}
+                    <Route path="/admin" element={<AdminPage />}>
+                        <Route path="classes" element={<AdminClassPage />} />
+                        <Route path="users" element={<AdminUserPage />} />
+                    </Route>
                 {/*</Route>*/}
 
                 {/* Error Pages */}
