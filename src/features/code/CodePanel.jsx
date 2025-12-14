@@ -22,63 +22,29 @@ const CodePanel = ({socket, classId}) => {
      * 페이지 진입 시 자동 저장된 코드 불러오기
      */
     useEffect(() => {
-
-        const loadAutoSaved = async () => {
-
-            if (!classId) {
-                return;
-            }
-
+        const loadAutoSavedCode = async () => {
             try {
-                setIsLoading(true);
-                console.log("🔄 자동 저장 코드 불러오는 중...", classId);
+                const autoSaved = await api.get("/api/code/auto-save", {
+                    params: { classId }
+                });
 
-                console.log("❌❌❌❌❌");
-
-
-                const response = await api.get(`/api/code/auto-save?classId=${classId}`);
-
-                console.log("📦 API 응답:", response.status, response.data);
-
-                if (response.status === 200 && response.data) {
-                    const autoSaved = response.data;
-
-                    console.log("자동 저장된 코드 발견:", {
-                        codeLength: autoSaved.code?.length,
-                        savedAt: autoSaved.savedAt
-                    });
-
-                    setCode(autoSaved.code || "// write code");
-                    setOutput(autoSaved.output || "");
-
-                    // 에디터가 이미 마운트되어 있으면 즉시 업데이트
-                    if (editorInstance) {
-                        console.log("에디터에 코드 설정");
-                        editorInstance.setValue(autoSaved.code || "// write code");
-                    }
-
-                    setLastSavedTime(new Date(autoSaved.savedAt));
-                } else {
-                    console.log("자동 저장 없음 - 기본값 사용");
-                    setCode("// write code");
+                if (autoSaved?.code) {
+                    setCode(autoSaved.code);
                 }
-            } catch (error) {
-                // 204 No Content 또는 404는 정상 (자동 저장 없음)
-                if (error.response?.status === 204 || error.response?.status === 404) {
-                    console.log("자동 저장된 코드 없음 (204/404)");
-                    setCode("// write code");
-                } else {
-                    console.error("자동 저장 불러오기 실패:", error);
-                    setCode("// write code");
-                }
+            } catch (e) {
+                // 204 / 자동저장 없음 → 정상 흐름
+                console.log("자동 저장 없음");
             } finally {
                 setIsLoading(false);
                 isInitialLoadRef.current = false;
             }
         };
 
-        loadAutoSaved();
-    }, [classId, setCode]);
+        if (classId) {
+            loadAutoSavedCode();
+        }
+    }, [classId]);
+
 
     /**
      * 코드 자동 전송 (디바운싱 적용)
