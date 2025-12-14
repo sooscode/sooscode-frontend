@@ -157,7 +157,7 @@
     gap: var(--spacing-3);
 }
 
-.updateIndigator {
+.indigator {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -171,6 +171,6 @@
     border-radius: 4px;
     z-index: 10;
 }
-.updateIndigator svg {
+.indigator svg {
     width: 16px;
 }

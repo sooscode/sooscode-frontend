@@ -43,33 +43,32 @@ const CodePanel = ({socket, classId}) => {
                 if (response.status === 200 && response.data) {
                     const autoSaved = response.data;
 
-                    console.log("✅ 자동 저장된 코드 발견:", {
+                    console.log("자동 저장된 코드 발견:", {
                         codeLength: autoSaved.code?.length,
                         savedAt: autoSaved.savedAt
                     });
 
-                    // Zustand 스토어 업데이트 (가장 중요!)
                     setCode(autoSaved.code || "// write code");
                     setOutput(autoSaved.output || "");
 
                     // 에디터가 이미 마운트되어 있으면 즉시 업데이트
                     if (editorInstance) {
-                        console.log("📝 에디터에 코드 설정");
+                        console.log("에디터에 코드 설정");
                         editorInstance.setValue(autoSaved.code || "// write code");
                     }
 
                     setLastSavedTime(new Date(autoSaved.savedAt));
                 } else {
-                    console.log("ℹ️ 자동 저장 없음 - 기본값 사용");
+                    console.log("자동 저장 없음 - 기본값 사용");
                     setCode("// write code");
                 }
             } catch (error) {
                 // 204 No Content 또는 404는 정상 (자동 저장 없음)
                 if (error.response?.status === 204 || error.response?.status === 404) {
-                    console.log("ℹ️ 자동 저장된 코드 없음 (204/404)");
+                    console.log("자동 저장된 코드 없음 (204/404)");
                     setCode("// write code");
                 } else {
-                    console.error("❌ 자동 저장 불러오기 실패:", error);
+                    console.error("자동 저장 불러오기 실패:", error);
                     setCode("// write code");
                 }
             } finally {
@@ -254,19 +253,16 @@ const CodePanel = ({socket, classId}) => {
         <div className={`${styles.relative} ${styles.editorWrapper}`}>
             {/* 자동 저장 상태 표시 */}
             {lastSavedTime && (
-                <div style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    fontSize: '11px',
-                    color: 'var(--color-text-secondary)',
-                    backgroundColor: 'var(--color-bg-secondary)',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    zIndex: 10,
-                    pointerEvents: 'none'
-                }}>
-                    💾 {lastSavedTime.toLocaleTimeString()}
+                <div className={styles.indigator}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                         className="lucide lucide-save-icon lucide-save">
+                        <path
+                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/>
+                        <path d="M7 3v4a1 1 0 0 0 1 1h7"/>
+                    </svg>
+                    {lastSavedTime.toLocaleTimeString()}
                 </div>
             )}
 
@@ -282,7 +278,7 @@ const CodePanel = ({socket, classId}) => {
 
             {/* 하단 결과창 */}
             <div className={styles.bottomPane} ref={bottomRef}>
-                {/* 리사이즈 바 */}
+            {/* 리사이즈 바 */}
                 <div className={styles.resizer} onMouseDown={startResize}>
                     <div className={styles.dotWrap}/>
                 </div>
