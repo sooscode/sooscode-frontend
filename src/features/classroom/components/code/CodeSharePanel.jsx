@@ -153,7 +153,7 @@ const CodeSharePanel = ({classId}) => {
      */
     const copy = () => {
         navigator.clipboard.writeText(sharedCode);
-        alert("Copied!");
+        alert("복사 되었습니다.");
     };
 
     /**
