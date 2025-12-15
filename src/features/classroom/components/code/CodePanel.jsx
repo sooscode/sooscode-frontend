@@ -6,6 +6,8 @@ import {useCode} from "@/features/classroom/hooks/code/useCode.js";
 import {api} from "@/services/api.js";
 import { useSocketContext } from "@/features/classroom/contexts/SocketContext";
 import { useClassMode, CLASS_MODES } from "@/features/classroom/contexts/ClassModeContext";
+import { useQuiz } from "@/features/classroom/contexts/QuizContext";
+import QuizProblemPanel from "./QuizProblemPanel";
 
 const CodePanel = ({classId}) => {
     const {darkMode} = useDarkMode();
@@ -16,18 +18,29 @@ const CodePanel = ({classId}) => {
     const [isLoading, setIsLoading] = useState(true);
     const socket = useSocketContext();
     const { mode } = useClassMode();
+    const { activeQuiz, isQuizActive } = useQuiz();
 
-
-    // 디바운싱을 위한 타이머 ref
     const debounceTimerRef = useRef(null);
     const isInitialLoadRef = useRef(true);
 
-
+    // 현재 모드가 읽기 전용인지 확인
     const isReadOnly = mode === CLASS_MODES.VIEW_ONLY;
 
-    /**
-     * 페이지 진입 시 자동 저장된 코드 불러오기
-     */
+    useEffect(() => {
+        console.log('[CodePanel] 모드 변경:', mode, '읽기전용:', isReadOnly);
+    }, [mode, isReadOnly]);
+
+    // 퀴즈가 시작되면 초기 코드 로드
+    useEffect(() => {
+        if (isQuizActive && activeQuiz?.initialCode) {
+            console.log('[CodePanel] 퀴즈 코드 로드:', activeQuiz.title);
+            setCode(activeQuiz.initialCode);
+            if (editorInstance) {
+                editorInstance.setValue(activeQuiz.initialCode);
+            }
+        }
+    }, [isQuizActive, activeQuiz, editorInstance]);
+
     useEffect(() => {
         const loadAutoSavedCode = async () => {
             try {
@@ -39,7 +52,6 @@ const CodePanel = ({classId}) => {
                     setCode(autoSaved.code);
                 }
             } catch (e) {
-                // 204 / 자동저장 없음 → 정상 흐름
                 console.log("자동 저장 없음");
             } finally {
                 setIsLoading(false);
@@ -52,25 +64,17 @@ const CodePanel = ({classId}) => {
         }
     }, [classId]);
 
-
-    /**
-     * 코드 자동 전송 (디바운싱 적용)
-     */
     useEffect(() => {
-        // 초기 로딩 중이거나 첫 로드일 때는 전송 안 함
         if (isInitialLoadRef.current || isLoading) return;
-
         if (!socket || !socket.connected || !classId) return;
 
-        // 읽기모드에서는 자동전송 안함
+        // 읽기 전용 모드에서는 자동 전송 안 함
         if (isReadOnly) return;
 
-        // 이전 타이머 취소
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
         }
 
-        // 300ms 후에 전송 (타이핑이 멈추면 전송)
         debounceTimerRef.current = setTimeout(() => {
             const message = {
                 code: code,
@@ -86,17 +90,13 @@ const CodePanel = ({classId}) => {
             }
         }, 300);
 
-        // 클린업
         return () => {
             if (debounceTimerRef.current) {
                 clearTimeout(debounceTimerRef.current);
             }
         };
-    }, [code, output, socket, classId, isLoading]);
+    }, [code, output, socket, classId, isLoading, isReadOnly]);
 
-    /**
-     * 라이트/다크 자동 적용
-     */
     const applyTheme = (monaco) => {
         if (!monaco) return;
 
@@ -118,9 +118,6 @@ const CodePanel = ({classId}) => {
         monaco.editor.setTheme("customTheme");
     };
 
-    /**
-     * Editor 로딩 시 실행
-     */
     const handleEditorMount = (editor, monaco) => {
         setEditorInstance(editor);
         setMonacoInstance(monaco);
@@ -132,7 +129,6 @@ const CodePanel = ({classId}) => {
 
         editor.__observer = observer;
 
-        // 에디터 마운트 후 현재 code 값으로 설정
         if (code && code !== "// write code") {
             editor.setValue(code);
         }
@@ -145,19 +141,12 @@ const CodePanel = ({classId}) => {
         }
     }, [isReadOnly, editorInstance]);
 
-
-    /**
-     * 테마 모드 바뀔 때마다 테마 재적용
-     */
     useEffect(() => {
         if (monacoInstance) {
             applyTheme(monacoInstance);
         }
     }, [darkMode]);
 
-    /**
-     * 컴파일 창 리사이즈
-     */
     const bottomRef = useRef(null);
     const startResize = (e) => {
         e.preventDefault();
@@ -181,9 +170,6 @@ const CodePanel = ({classId}) => {
         document.removeEventListener("mouseup", stopResize);
     };
 
-    /**
-     * 컴파일 실행
-     */
     const run = async () => {
         try {
             const encoded = btoa(unescape(encodeURIComponent(code)));
@@ -204,7 +190,7 @@ const CodePanel = ({classId}) => {
     }
 
     const reset = () => {
-        if (isReadOnly) return;
+        if (isReadOnly) return; // 읽기 전용에서는 리셋 불가
         setCode("// write code");
         if (editorInstance) editorInstance.setValue("// write code");
     };
@@ -214,9 +200,6 @@ const CodePanel = ({classId}) => {
         alert("Copied!");
     };
 
-    /**
-     * 모나코 에디터 내장 옵션
-     */
     const options = {
         minimap: {enabled: false},
         fontSize: 14,
@@ -237,8 +220,23 @@ const CodePanel = ({classId}) => {
 
     return (
         <div className={`${styles.relative} ${styles.editorWrapper}`}>
-            {/* 자동 저장 상태 표시 */}
-            {lastSavedTime && (
+            {/* 퀴즈 문제 패널 */}
+            {isQuizActive && activeQuiz && (
+                <QuizProblemPanel problem={activeQuiz} />
+            )}
+
+            {/* 읽기 전용 모드 표시 */}
+            {isReadOnly && (
+                <div className={styles.readOnlyBadge}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    읽기 전용
+                </div>
+            )}
+
+            {lastSavedTime && !isReadOnly && (
                 <div className={styles.indigator}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -262,14 +260,11 @@ const CodePanel = ({classId}) => {
                 className={styles.editor}
             />
 
-            {/* 하단 결과창 */}
             <div className={styles.bottomPane} ref={bottomRef}>
-            {/* 리사이즈 바 */}
                 <div className={styles.resizer} onMouseDown={startResize}>
                     <div className={styles.dotWrap}/>
                 </div>
 
-                {/* 컴파일 창*/}
                 <div className={styles.resultHeader}>
                     <div className={styles.flex}>
                         <button onClick={run} className={styles.runButton}>
@@ -280,7 +275,11 @@ const CodePanel = ({classId}) => {
                                     d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/>
                             </svg>
                         </button>
-                        <button onClick={reset} className={styles.resetButton}>
+                        <button
+                            onClick={reset}
+                            className={styles.resetButton}
+                            disabled={isReadOnly}
+                        >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none"
                                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

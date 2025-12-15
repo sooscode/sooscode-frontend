@@ -54,8 +54,7 @@ const ClassBody = () => {
                     {/* 왼쪽 패널 */}
                     <div className={`${styles.inner} ${styles.left}`} ref={leftRef}>
                         <div className={styles.tabContainer}>
-                            <button className={styles.tab}>내 코드</button>
-                            {/* 모드 전환 바를 왼쪽 패널 상단에 추가 */}
+                            {/*<button className={styles.tab}>내 코드</button>*/}
                             <ModeToggleBar />
                         </div>
                         <CodePanel classId={classId} />
@@ -95,8 +94,6 @@ const ClassBody = () => {
                         >
                             <SnapshotPanel />
                         </div>
-
-
                     </div>
                 </div>
             </div>

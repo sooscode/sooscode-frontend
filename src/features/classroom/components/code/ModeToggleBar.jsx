@@ -1,8 +1,35 @@
 import { useClassMode, CLASS_MODES } from '@/features/classroom/contexts/ClassModeContext';
+import { useQuiz } from '@/features/classroom/contexts/QuizContext';
+import { useEffect, useState } from 'react';
+import QuizControlModal from './QuizControlModal';
 import styles from './ModeToggleBar.module.css';
 
 const ModeToggleBar = () => {
     const { mode, changeMode } = useClassMode();
+    const { startQuiz } = useQuiz();
+    const [showQuizModal, setShowQuizModal] = useState(false);
+
+    useEffect(() => {
+        console.log('[ModeToggleBar] 현재 모드:', mode);
+    }, [mode]);
+
+    const handleModeChange = (newMode) => {
+        console.log('[ModeToggleBar] 버튼 클릭:', newMode);
+
+        // 퀴즈 모드는 모달 표시
+        if (newMode === CLASS_MODES.QUIZ) {
+            setShowQuizModal(true);
+            return;
+        }
+
+        changeMode(newMode);
+    };
+
+    const handleStartQuiz = (problem) => {
+        console.log('[ModeToggleBar] 퀴즈 시작:', problem);
+        startQuiz(problem);
+        changeMode(CLASS_MODES.QUIZ);
+    };
 
     const getModeLabel = (modeType) => {
         switch (modeType) {
@@ -47,22 +74,30 @@ const ModeToggleBar = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.label}>수업 모드</div>
-            <div className={styles.buttons}>
-                {Object.values(CLASS_MODES).map((modeType) => (
-                    <button
-                        key={modeType}
-                        className={`${styles.button} ${mode === modeType ? styles.active : ''}`}
-                        onClick={() => changeMode(modeType)}
-                        disabled={modeType === CLASS_MODES.QUIZ}
-                    >
-                        <span className={styles.icon}>{getModeIcon(modeType)}</span>
-                        <span className={styles.text}>{getModeLabel(modeType)}</span>
-                    </button>
-                ))}
+        <>
+            <div className={styles.container}>
+                {/*<div className={styles.label}>수업 모드</div>*/}
+                <div className={styles.buttons}>
+                    {Object.values(CLASS_MODES).map((modeType) => (
+                        <button
+                            key={modeType}
+                            className={`${styles.button} ${mode === modeType ? styles.active : ''}`}
+                            onClick={() => handleModeChange(modeType)}
+                        >
+                            <span className={styles.icon}>{getModeIcon(modeType)}</span>
+                            <span className={styles.text}>{getModeLabel(modeType)}</span>
+                        </button>
+                    ))}
+                </div>
             </div>
-        </div>
+
+            {showQuizModal && (
+                <QuizControlModal
+                    onClose={() => setShowQuizModal(false)}
+                    onStartQuiz={handleStartQuiz}
+                />
+            )}
+        </>
     );
 };
 
