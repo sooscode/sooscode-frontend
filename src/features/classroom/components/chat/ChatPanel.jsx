@@ -32,11 +32,15 @@ export default function ChatPanel() {
         sendReaction,
         replyTarget,
         setReplyTarget,
+        typingUsers,
+        sendTyping,
+        stopTyping,
         fetchReactionUsers
     } = useChatPanel(classId);
 
     return (
         <aside className="chat-sidebar">
+
             {/* 상단 헤더 */}
             <ChatHeader classId={classId} connected={connected} />
 
@@ -59,6 +63,7 @@ export default function ChatPanel() {
                 handleReply={handleReply}
                 scrollToMessage={scrollToMessage}
                 fetchReactionUsers={fetchReactionUsers}
+                typingUsers={typingUsers}
             />
 
             {/* 입력창 */}
@@ -71,6 +76,8 @@ export default function ChatPanel() {
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 onSubmit={handleSubmit}
+                sendTyping={sendTyping}
+                stopTyping={stopTyping}
             />
         </aside>
     );

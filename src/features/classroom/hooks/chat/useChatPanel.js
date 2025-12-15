@@ -38,6 +38,10 @@ export const useChatPanel = (classId = 1) => {
     const myEmail = user?.email ?? null;
     const myName = user?.name ?? null;
 
+    const [typingUsers, setTypingUsers] = useState([]); // [{userId, name}]
+    const typingTimerRef = useRef(null);
+    const lastSentRef = useRef(0);
+
 
 
     // ---------------- 스크롤 핸들러 ----------------
@@ -84,6 +88,7 @@ export const useChatPanel = (classId = 1) => {
             document.removeEventListener("visibilitychange", handleVisibility);
         };
     }, [connected, myName, classId, publish]);
+
 
     // ---------------- 채팅 히스토리 최초 로드 ----------------
     useEffect(() => {
@@ -210,6 +215,62 @@ export const useChatPanel = (classId = 1) => {
         prevLengthRef.current = messages.length;
     }, [messages, myEmail, isAtBottom]);
 
+    // ---------------- 입력중 ---------------------
+    useEffect(() => {
+        if (!connected) return;
+
+        const sub = subscribe(
+            `/topic/chat/${classId}/typing`, // 🔥 서버 convertAndSend 경로
+            (body) => {
+                console.log("🟥 typing raw:", body);   // 🔥 이게 찍혀야 UI 나옴
+
+                const data = JSON.parse(body.body ?? body);
+
+                console.log("✅ typing received:", data);
+
+                // 내 typing은 표시 안 함
+                if (data.userId === user?.userId) return;
+
+                setTypingUsers((prev) => {
+                    const exists = prev.some((u) => u.userId === data.userId);
+
+                    if (data.typing) {
+                        return exists
+                            ? prev
+                            : [...prev, { userId: data.userId, name: data.name }];
+                    }
+                    return prev.filter((u) => u.userId !== data.userId);
+                });
+            }
+        );
+
+        return () => sub?.unsubscribe?.();
+    }, [connected, subscribe, classId, user?.userId]);
+
+    const sendTyping = () => {
+        if (!connected) return;
+
+        const now = Date.now();
+        if (now - lastSentRef.current < 300) return; // 레이트 제한
+        lastSentRef.current = now;
+
+        //  백엔드 @MessageMapping 경로에 맞춰야 함
+        // 추천: /app/class/{classId}/typing
+        publish("/app/chat.typing",{ classId });
+
+        clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = setTimeout(() => {
+            publish("/app/chat.stopTyping", { classId });
+        }, 1500);
+    };
+
+    const stopTyping = () => {
+        if (!connected) return;
+        clearTimeout(typingTimerRef.current);
+        publish("/app/chat.stopTyping", { classId });
+    };
+
+
     // ---------------- 메시지 전송 ----------------
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -228,6 +289,9 @@ export const useChatPanel = (classId = 1) => {
         };
 
         publish(`/app/class/${classId}/chat`, payload);
+
+        stopTyping();
+        setTypingUsers([]);
         setInputValue("");
         setReplyTarget(null); // 전송 후 답장 상태 초기화
     };
@@ -242,7 +306,7 @@ export const useChatPanel = (classId = 1) => {
 
         setActiveMenuId(null);
     };
-
+    // ------------- 입력중 --------------------
     // ---------------- 답장 시작 ----------------
     const handleReply = (msg) => {
         setReplyTarget({
@@ -334,8 +398,11 @@ export const useChatPanel = (classId = 1) => {
         connected,
         error,
         myEmail,
+        typingUsers,
 
         // setter / 핸들러
+        sendTyping,
+        stopTyping,
         setReplyTarget,
         setInputValue,
         setActiveMenuId,

@@ -53,6 +53,7 @@ export default function ChatMessageList({
                                             handleDelete,
                                             handleReply,
                                             scrollToMessage,
+                                            typingUsers
                                         }) {
     return (
         <div
@@ -108,6 +109,14 @@ export default function ChatMessageList({
                     );
                 })}
             {/* 자동 스크롤용 anchor */}
+            {typingUsers?.length > 0 && (
+                <div className="chat-typing-indicator">
+                    {typingUsers.length === 1
+                        ? `${typingUsers[0].name} 입력 중…`
+                        : `${typingUsers[0].name} 외 ${typingUsers.length - 1}명 입력 중…`}
+                </div>
+            )}
+
             <div ref={bottomRef} />
         </div>
     );
