@@ -28,12 +28,14 @@ import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx
 // 수빈 테스트
 import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
 // 현영 테스트
-import AdminPage from "@/features/admin/layouts/AdminLayout.jsx";
-import CodePracticePage from '../pages/codepractice/CodePracticePage';
-import AdminClassPage from "@/features/admin/pages/AdminClassroomPage.jsx";
-import AdminUserPage from "@/features/admin/pages/AdminUserPage.jsx";
 import ClassJoinTest from "@/features/classroom/pages/ClassJoinTest.jsx";
+import AdminPage from "@/features/admin/layouts/AdminLayout.jsx";
+import AdminClassroomPage from "@/features/admin/pages/classroom/AdminClassroomPage.jsx";
+import AdminUserPage from "@/features/admin/pages/user/AdminUserPage.jsx";
+import AdminClassroomDetailPage from "@/features/admin/pages/classroom/AdminClassroomDetailPage.jsx";
+import AdminUserDetailPage from "@/features/admin/pages/user/AdminUserDetailPage.jsx";
 // 효상 테스트
+import CodePracticePage from '../pages/codepractice/CodePracticePage';
 
 export default function AppRoute() {
     return (
@@ -68,8 +70,10 @@ export default function AppRoute() {
                 {/* Private - 관리자 전용 */}
                 {/*<Route element={<PrivateRoute allowedRoles={['ADMIN']} />}>*/}
                     <Route path="/admin" element={<AdminPage />}>
-                        <Route path="classes" element={<AdminClassPage />} />
+                        <Route path="classes" element={<AdminClassroomPage />} />
+                        <Route path="classes/:id" element={<AdminClassroomDetailPage />} />
                         <Route path="users" element={<AdminUserPage />} />
+                        <Route path="users/:id" element={<AdminUserDetailPage />} />
                     </Route>
                 {/*</Route>*/}
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Pagination.module.css';
 
 /**
  * React 페이지네이션 컴포넌트
@@ -51,12 +52,12 @@ const Pagination = ({
     const pageNumbers = getPageNumbers();
 
     return (
-        <div className="pagination">
+        <div className={styles.pagination}>
             {/* 처음 */}
             <button
                 onClick={() => handlePageChange(0)}
                 disabled={currentPage === 0}
-                className="btn-page"
+                className={styles.btnPage}
                 title="처음"
             >
                 «
@@ -66,7 +67,7 @@ const Pagination = ({
             <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 0}
-                className="btn-page"
+                className={styles.btnPage}
                 title="이전"
             >
                 ‹
@@ -75,12 +76,12 @@ const Pagination = ({
             {/* 페이지 번호들 */}
             {pageNumbers.map((num, idx) =>
                 num === '...' ? (
-                    <span key={`ellipsis-${idx}`} className="ellipsis">...</span>
+                    <span key={`ellipsis-${idx}`} className={styles.ellipsis}>...</span>
                 ) : (
                     <button
                         key={num}
                         onClick={() => handlePageChange(num)}
-                        className={`btn-page ${num === currentPage ? 'active' : ''}`}
+                        className={`${styles.btnPage} ${num === currentPage ? styles.active : ''}`}
                     >
                         {num + 1}
                     </button>
@@ -91,7 +92,7 @@ const Pagination = ({
             <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages - 1}
-                className="btn-page"
+                className={styles.btnPage}
                 title="다음"
             >
                 ›
@@ -101,7 +102,7 @@ const Pagination = ({
             <button
                 onClick={() => handlePageChange(totalPages - 1)}
                 disabled={currentPage === totalPages - 1}
-                className="btn-page"
+                className={styles.btnPage}
                 title="마지막"
             >
                 »
@@ -109,7 +110,7 @@ const Pagination = ({
 
             {/* 페이지 정보 */}
             {showPageInfo && (
-                <span className="page-info">{currentPage + 1} / {totalPages} 페이지</span>
+                <span className={styles.pageInfo}>{currentPage + 1} / {totalPages} 페이지</span>
             )}
         </div>
     );
