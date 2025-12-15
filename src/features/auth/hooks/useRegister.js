@@ -67,14 +67,14 @@ const useRegister = () => {
         const newErr = {};
 
         if (form.name.length < 2 || form.name.length > 20)
-            newErr.name = "이름은 2~20자";
+            newErr.name = "이름은2~20자";
         if (form.email.length < 5)
-            newErr.email = "이메일은 5자 이상";
+            newErr.email = "이메일 5자 이상";
         else if (!/\S+@\S+\.\S+/.test(form.email))
             newErr.email = "이메일 형식 오류";
 
-        if (form.password.length < 8 || form.password.length > 20)
-            newErr.password = "비밀번호 8~20자";
+        if (form.password.length < 8 || form.password.length > 16)
+            newErr.password = "비밀번호 8~16자";
         if (form.password !== form.confirmPassword)
             newErr.confirmPassword = "비밀번호 불일치";
 
@@ -100,8 +100,15 @@ const useRegister = () => {
             start(300); // 5분 타이머
 
         } catch (err) {
-            const msg = handleAuthError(err.response?.data?.code, {emailRef});
-            alert(msg || "전송 실패");
+            const errorCode = err.response?.data?.code;
+            const backendMessage = err.response?.data?.message;
+
+            handleAuthError(errorCode, { emailRef });
+
+            setErrors(prev => ({
+                ...prev,
+                email: backendMessage || "이미 가입된 이메일 입니다."
+            }));
         } finally {
             setLoadingSend(false);
         }
@@ -149,6 +156,12 @@ const useRegister = () => {
                 emailRef,
                 passwordRef,
             });
+            if (msg) {
+                setErrors(prev => ({
+                    ...prev,
+                    email: msg
+                }));
+            }
             alert(msg || "회원가입에 실패했습니다.");
         }
     };
