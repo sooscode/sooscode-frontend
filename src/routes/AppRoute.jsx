@@ -22,20 +22,23 @@ import ToastTest from '@/pages/test/ToastTest';
 import LoadingTest from '@/pages/test/LoadingTest';
 import ColorPalette from '@/pages/test/ColorPalette';
 
-import StudentClassDetail from '@/pages/classdetail/StudentClassDetail.jsx'
-import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx'
-
 // 수빈 테스트
 import LogoutButton from "@/features/auth/components/base/LogoutButton.jsx";
+
 // 현영 테스트
+import AdminPage from "@/pages/admin/AdminPage.jsx";
+import CodeTestPage from '../pages/codepractice/CodeTestPage';
 import ClassJoinTest from "@/features/classroom/pages/ClassJoinTest.jsx";
 import AdminPage from "@/features/admin/layouts/AdminLayout.jsx";
 import AdminClassroomPage from "@/features/admin/pages/classroom/AdminClassroomPage.jsx";
 import AdminUserPage from "@/features/admin/pages/user/AdminUserPage.jsx";
 import AdminClassroomDetailPage from "@/features/admin/pages/classroom/AdminClassroomDetailPage.jsx";
 import AdminUserDetailPage from "@/features/admin/pages/user/AdminUserDetailPage.jsx";
+
 // 효상 테스트
 import CodePracticePage from '../pages/codepractice/CodePracticePage';
+import StudentClassDetail from '@/pages/classdetail/StudentClassDetail.jsx'
+import InstructorClassDetail from '@/pages/classdetail/InstructorClassDetail.jsx'
 
 export default function AppRoute() {
     return (
@@ -52,6 +55,7 @@ export default function AppRoute() {
                 <Route path="/classdetail/student" element={<StudentClassDetail />} />
                 <Route path="/classdetail/instructor" element={<InstructorClassDetail />} />
                 <Route path="/codepractice" element={<CodePracticePage />} />
+                <Route path="/test" element={<CodeTestPage />} />
 
                 <Route path="/" element={<Home />} />
                 <Route path="/classjoin" element={<ClassJoinTest />} />
