@@ -3,8 +3,9 @@ import {useEffect, useRef, useState} from "react";
 import {useDarkMode} from "@/hooks/useDarkMode.js";
 import styles from './CodePanel.module.css';
 import { useSocketContext } from "@/features/classroom/contexts/SocketContext";
+import {api} from "@/services/api.js";
 
-const CodeSharePanel = ({classId}) => {
+const CodeSharePanel = ({classId, isInstructor = false}) => {
     const {darkMode} = useDarkMode();
 
     // 로컬 상태 사용 (독립적인 코드 관리)
@@ -14,6 +15,9 @@ const CodeSharePanel = ({classId}) => {
     const [output, setOutput] = useState("");
     const [lastUpdateTime, setLastUpdateTime] = useState(null);
     const socket = useSocketContext();
+
+    // 선생님이 수정할 때 사용할 디바운스 타이머
+    const debounceTimerRef = useRef(null);
 
     /**
      * 웹소켓 구독
@@ -57,8 +61,8 @@ const CodeSharePanel = ({classId}) => {
                 // 코드 업데이트
                 editorInstance.setValue(dto.code);
 
-                // 커서와 스크롤 위치 복원 (읽기 전용이지만 사용자 경험 향상)
-                if (currentPosition) {
+                // 선생님의 경우 커서와 스크롤 위치 복원
+                if (isInstructor && currentPosition) {
                     editorInstance.setPosition(currentPosition);
                 }
                 editorInstance.setScrollTop(currentScrollTop);
@@ -73,6 +77,38 @@ const CodeSharePanel = ({classId}) => {
             setOutput(dto.output || "");
         }
     };
+
+    /**
+     * 선생님이 코드를 수정할 때 자동으로 전송
+     */
+    useEffect(() => {
+        if (!isInstructor) return;
+        if (!socket || !socket.connected || !classId) return;
+
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+
+        debounceTimerRef.current = setTimeout(() => {
+            const message = {
+                code: sharedCode,
+                language: 'javascript',
+                output: output || null,
+            };
+
+            try {
+                socket.publish(`/app/code/${classId}`, message);
+            } catch (error) {
+                console.error('코드 전송 실패:', error);
+            }
+        }, 300);
+
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, [sharedCode, output, socket, classId, isInstructor]);
 
     /**
      * 라이트/다크 자동 적용
@@ -149,6 +185,52 @@ const CodeSharePanel = ({classId}) => {
     };
 
     /**
+     * 선생님 전용: 실행 기능
+     */
+    const run = async () => {
+        if (!isInstructor) return;
+
+        try {
+            const encoded = btoa(unescape(encodeURIComponent(sharedCode)));
+
+            const response = await api.post("/api/compile/run", {
+                code: encoded,
+            });
+
+            const result = response.data;
+            const newOutput = result.output || "결과가 없습니다.";
+            setOutput(newOutput);
+
+            // 결과를 웹소켓으로 전송
+            if (socket && socket.connected) {
+                const message = {
+                    code: sharedCode,
+                    language: 'javascript',
+                    output: newOutput,
+                };
+                socket.publish(`/app/code/${classId}`, message);
+            }
+
+        } catch (err) {
+            const errorOutput = err.response
+                ? "백엔드 오류:\n" + JSON.stringify(err.response.data, null, 2)
+                : "네트워크 오류:\n" + err.message;
+            setOutput(errorOutput);
+        }
+    };
+
+    /**
+     * 선생님 전용: 리셋 기능
+     */
+    const reset = () => {
+        if (!isInstructor) return;
+
+        const resetCode = "// write code";
+        setSharedCode(resetCode);
+        if (editorInstance) editorInstance.setValue(resetCode);
+    };
+
+    /**
      * 복사 기능
      */
     const copy = () => {
@@ -174,14 +256,25 @@ const CodeSharePanel = ({classId}) => {
             verticalScrollbarSize: 4,
             verticalSliderSize: 4,
         },
-        readOnly: true, // 읽기 전용
+        readOnly: !isInstructor, // 선생님만 편집 가능
     };
 
     return (
         <>
             <div className={`${styles.relative} ${styles.editorWrapper} ${styles.editorWrapperRight}`}>
+                {/* 선생님 전용: 편집 가능 표시 */}
+                {isInstructor && (
+                    <div className={styles.indigator} style={{backgroundColor: 'var(--color-success)', color: 'white'}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                        편집 모드
+                    </div>
+                )}
+
                 {/* 실시간 업데이트 인디케이터 */}
-                {lastUpdateTime && (
+                {lastUpdateTime && !isInstructor && (
                     <div className={styles.indigator}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -214,10 +307,27 @@ const CodeSharePanel = ({classId}) => {
                     {/* 컴파일 창*/}
                     <div className={styles.resultHeader}>
                         <div className={styles.flex}>
+                            {/* 선생님만 실행/리셋 버튼 표시 */}
+                            {isInstructor && (
+                                <>
+                                    <button onClick={run} className={styles.runButton}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/>
+                                        </svg>
+                                    </button>
+                                    <button onClick={reset} className={styles.resetButton}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                            <path d="M3 3v5h5"/>
+                                        </svg>
+                                    </button>
+                                </>
+                            )}
                             <button onClick={copy} className={styles.copyButton} title="복사">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
                                      strokeLinejoin="round">
                                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>

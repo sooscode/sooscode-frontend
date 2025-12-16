@@ -9,7 +9,7 @@ import { useClassMode, CLASS_MODES } from "@/features/classroom/contexts/ClassMo
 import { useQuiz } from "@/features/classroom/contexts/QuizContext";
 import QuizProblemPanel from "./QuizProblemPanel";
 
-const CodePanel = ({classId}) => {
+const CodePanel = ({classId, isInstructor = false}) => {
     const {darkMode} = useDarkMode();
     const {code, setCode, editorInstance, setEditorInstance} = useCode();
     const [monacoInstance, setMonacoInstance] = useState(null);
@@ -23,12 +23,17 @@ const CodePanel = ({classId}) => {
     const debounceTimerRef = useRef(null);
     const isInitialLoadRef = useRef(true);
 
-    // 현재 모드가 읽기 전용인지 확인
-    const isReadOnly = mode === CLASS_MODES.VIEW_ONLY;
+    // 선생님은 항상 편집 가능, 학생만 읽기 전용 모드의 영향을 받음
+    const isReadOnly = !isInstructor && mode === CLASS_MODES.VIEW_ONLY;
 
     useEffect(() => {
-        console.log('[CodePanel] 모드 변경:', mode, '읽기전용:', isReadOnly);
-    }, [mode, isReadOnly]);
+        if (!editorInstance) return;
+
+        editorInstance.updateOptions({
+            readOnly: isReadOnly, domReadOnly: isReadOnly,
+
+        });
+    }, [isReadOnly]);
 
     // 퀴즈가 시작되면 초기 코드 로드
     useEffect(() => {
@@ -68,7 +73,7 @@ const CodePanel = ({classId}) => {
         if (isInitialLoadRef.current || isLoading) return;
         if (!socket || !socket.connected || !classId) return;
 
-        // 읽기 전용 모드에서는 자동 전송 안 함
+        // 선생님은 항상 자동 전송, 학생은 읽기 전용 모드가 아닐 때만 자동 전송
         if (isReadOnly) return;
 
         if (debounceTimerRef.current) {
@@ -211,12 +216,17 @@ const CodePanel = ({classId}) => {
         automaticLayout: true,
         overviewRulerLanes: 0,
         overviewRulerBorder: false,
-        readOnly: isReadOnly, // 모드에 따라 읽기 전용 설정
+        readOnly: isReadOnly, // 선생님은 항상 false, 학생만 모드에 따라 변경
         scrollbar: {
             verticalScrollbarSize: 4,
             verticalSliderSize: 4,
         },
     };
+    useEffect(() => {
+        if (editorInstance) {
+            editorInstance.updateOptions({ readOnly: isReadOnly });
+        }
+    }, [isReadOnly]);
 
     return (
         <div className={`${styles.relative} ${styles.editorWrapper}`}>
@@ -225,8 +235,8 @@ const CodePanel = ({classId}) => {
                 <QuizProblemPanel problem={activeQuiz} />
             )}
 
-            {/* 읽기 전용 모드 표시 */}
-            {isReadOnly && (
+            {/* 학생에게만 읽기 전용 모드 표시 */}
+            {!isInstructor && isReadOnly && (
                 <div className={styles.readOnlyBadge}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
@@ -267,6 +277,7 @@ const CodePanel = ({classId}) => {
 
                 <div className={styles.resultHeader}>
                     <div className={styles.flex}>
+                        {/* 실행은 항상 가능 */}
                         <button onClick={run} className={styles.runButton}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none"
@@ -275,6 +286,7 @@ const CodePanel = ({classId}) => {
                                     d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/>
                             </svg>
                         </button>
+                        {/* 리셋은 읽기 전용이 아닐 때만 */}
                         <button
                             onClick={reset}
                             className={styles.resetButton}

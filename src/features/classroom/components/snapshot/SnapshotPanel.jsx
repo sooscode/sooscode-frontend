@@ -48,7 +48,7 @@ const SnapshotPanel = () => {
         <div className={styles.container}>
 
             <div className={styles.header}>
-                <SnapshotSaveFeature />
+                {/*<SnapshotSaveFeature />*/}
             </div>
 
             <div className={styles.listArea}>
