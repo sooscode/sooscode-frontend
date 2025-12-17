@@ -5,7 +5,7 @@ const BASE_URL = "https://sooscode-api.kro.kr";
 export const SOCKET_URL = `${BASE_URL}/ws`;
 
 export const api = axios.create({
-    baseURL: {BASE_URL},
+    baseURL: `${BASE_URL}`,
     withCredentials: true,
     timeout: 5000,
 });
