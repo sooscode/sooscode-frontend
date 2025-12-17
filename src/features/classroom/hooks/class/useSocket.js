@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-
-const SOCKET_URL = 'http://localhost:8080/ws';
+import { SOCKET_URL } from '@/services/api';
 
 const useSocket = (classroomId, isInstructor = false) => {
     const [connected, setConnected] = useState(false);
@@ -31,7 +30,6 @@ const useSocket = (classroomId, isInstructor = false) => {
 
             // 연결 성공
             onConnect: () => {
-                console.log('[WebSocket] 연결 성공');
                 setConnected(true);
                 setError(null);
                 reconnectAttempts.current = 0;
@@ -39,35 +37,18 @@ const useSocket = (classroomId, isInstructor = false) => {
 
             // 연결 해제
             onDisconnect: () => {
-                console.log('[WebSocket] 연결 해제');
                 setConnected(false);
             },
 
             // STOMP 에러
             onStompError: (frame) => {
-                console.warn('[WebSocket] STOMP 에러:', frame);
+                setError(frame.headers['message'] || '연결 오류');
+                setConnected(false);
 
-                let msg = frame?.headers?.message || '요청 처리 중 오류가 발생했습니다.';
-
-                // 서버가 body에 code/message 내려주는 경우 대응
-                if (frame?.body) {
-                    try {
-                        const parsed = JSON.parse(frame.body);
-                        msg = parsed.code ?? parsed.message ?? msg;
-                    } catch {
-                        msg = frame.body;
-                    }
-                }
-
-                //  STOMP 에러는 "연결 끊김"이 아님 → connected 건드리지 말 것
-                // setConnected(false);  //  제거
-
-                setError(msg);
             },
 
             // WebSocket 에러
             onWebSocketError: (event) => {
-                console.error('[WebSocket] 연결 에러:', event);
                 setError('서버에 연결할 수 없습니다.');
             },
 
@@ -102,11 +83,9 @@ const useSocket = (classroomId, isInstructor = false) => {
 
     const subscribe = useCallback((destination, callback) => {
         if (!clientRef.current?.connected) {
-            console.warn('[WebSocket] 연결되지 않은 상태에서 구독 시도:', destination);
             return null;
         }
 
-        console.log('[WebSocket] 구독:', destination);
         return clientRef.current.subscribe(destination, (message) => {
             try {
                 const data = JSON.parse(message.body);
@@ -119,11 +98,9 @@ const useSocket = (classroomId, isInstructor = false) => {
 
     const publish = useCallback((destination, body) => {
         if (!clientRef.current?.connected) {
-            console.warn('[WebSocket] 연결되지 않은 상태에서 발행 시도:', destination);
             return;
         }
 
-        console.log('[WebSocket] 발행:', destination, body);
         clientRef.current.publish({
             destination,
             body: JSON.stringify(body),

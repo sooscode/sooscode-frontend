@@ -21,6 +21,7 @@ export default function ChatPanel() {
         highlightId,
         connected,
         error,
+        chatError,
         myEmail,
         setInputValue,
         setActiveMenuId,
@@ -37,6 +38,7 @@ export default function ChatPanel() {
         stopTyping,
         fetchReactionUsers
     } = useChatPanel(classId);
+
 
     return (
         <aside className="chat-sidebar">
@@ -78,6 +80,7 @@ export default function ChatPanel() {
                 onSubmit={handleSubmit}
                 sendTyping={sendTyping}
                 stopTyping={stopTyping}
+                chatError={chatError}
             />
         </aside>
     );

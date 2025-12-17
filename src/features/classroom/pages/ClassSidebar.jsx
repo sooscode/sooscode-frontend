@@ -2,8 +2,8 @@ import styles from './ClassSidebar.module.css';
 import { useState } from "react";
 import { useSidebar } from "@/features/classroom/hooks/class/useSidebar.js";
 import { useParticipants } from "@/features/classroom/hooks/class/useParticipants.js";
-import { useSelectedStudent } from "@/features/classroom/hooks/class/useSelectedStudent.js"; // ✅ 추가
-import { useUser } from "@/hooks/useUser.js"; // ✅ 추가
+import { useSelectedStudent } from "@/features/classroom/hooks/class/useSelectedStudent.js"; // 추가
+import { useUser } from "@/hooks/useUser.js"; // 추가
 import { useParams } from "react-router-dom";
 import { decodeNumber } from "@/utils/urlEncoder";
 import ChatPanel from "@/features/classroom/components/chat/ChatPanel.jsx";
@@ -58,12 +58,12 @@ const ClassSidebar = () => {
                         >
                             채팅
                         </button>
-                        <button
-                            className={`${styles.tabButton} ${activeTab === 'files' ? styles.active : ''}`}
-                            onClick={() => setActiveTab('files')}
-                        >
-                            파일
-                        </button>
+                        {/*<button*/}
+                        {/*    className={`${styles.tabButton} ${activeTab === 'files' ? styles.active : ''}`}*/}
+                        {/*    onClick={() => setActiveTab('files')}*/}
+                        {/*>*/}
+                        {/*    파일*/}
+                        {/*</button>*/}
                     </div>
 
                     {/* 탭 컨텐츠 */}
@@ -74,7 +74,7 @@ const ClassSidebar = () => {
                                 {instructors.length > 0 && (
                                     <div className={styles.participantGroup}>
                                         <h4 className={styles.groupTitle}>
-                                            👨‍🏫 강사 ({instructors.length})
+                                            강사 ({instructors.length})
                                         </h4>
                                         <div className={styles.studentList}>
                                             {instructors.map((instructor) => (
@@ -103,7 +103,7 @@ const ClassSidebar = () => {
                                 {/* 학생 목록 */}
                                 <div className={styles.participantGroup}>
                                     <h4 className={styles.groupTitle}>
-                                        👥 학생 ({students.length})
+                                        학생 ({students.length})
                                     </h4>
                                     {students.length > 0 ? (
                                         <div className={styles.studentList}>
@@ -153,11 +153,11 @@ const ClassSidebar = () => {
                         {activeTab === 'chat' && (
                             <ChatPanel/>
                         )}
-                        {activeTab === 'files' && (
-                            <div className={styles.fileList}>
-                                <p>파일이 여기 표시됩니다</p>
-                            </div>
-                        )}
+                        {/*{activeTab === 'files' && (*/}
+                        {/*    <div className={styles.fileList}>*/}
+                        {/*        <p>파일이 여기 표시됩니다</p>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                     </div>
                 </div>
             </div>
