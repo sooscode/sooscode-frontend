@@ -87,7 +87,7 @@ const LoginForm = () => {
                     type="button"
                     className={styles.googleButton}
                     onClick={() =>
-                        (window.location.href = "http://localhost:8080/api/auth/google/login")
+                        (window.location.href = "https://sooscode.kro.kr/api/auth/google/login")
                     }
                 >
                     Google로 계속하기

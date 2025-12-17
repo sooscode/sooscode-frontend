@@ -63,7 +63,7 @@ const CodePanel = ({ classId, isInstructor = false }) => {
         }
     }, [classId]);
 
-    //  학생: 강사가 CodeSharePanel에서 편집한 "자기" 코드만 수신
+    // 학생: 강사가 CodeSharePanel에서 편집한 "자기" 코드만 수신
     useEffect(() => {
         if (isInstructor) return; // 강사는 수신 안 함
         if (!socket || !socket.connected) return;
@@ -76,7 +76,7 @@ const CodePanel = ({ classId, isInstructor = false }) => {
 
             if (!data || data.code == null) return;
 
-            //  STUDENT_EDIT 타입이고, 자기를 대상으로 한 편집만 반영
+            // STUDENT_EDIT 타입이고, 자기를 대상으로 한 편집만 반영
             if (data.type === 'STUDENT_EDIT') {
                 // targetEmail이 있으면 자기 이메일과 비교
                 if (data.targetEmail && data.targetEmail !== user?.email) {
@@ -91,15 +91,14 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                 }, 0);
 
                 console.log('[CodePanel-Student] 강사 편집 반영 (type: STUDENT_EDIT)');
+
             } else {
-                console.log('[CodePanel-Student] 무시 (type:', data.type, ') - CodeSharePanel에서만 표시');
             }
         });
 
         return () => {
             if (subscription) {
                 subscription.unsubscribe();
-                console.log(`[CodePanel-Student] 강사 편집 구독 해제`);
             }
         };
     }, [socket, socket?.connected, classId, isInstructor, setCode, user?.email]);
@@ -110,7 +109,7 @@ const CodePanel = ({ classId, isInstructor = false }) => {
         if (!socket || !socket.connected || !classId) return;
         if (isReadOnly) return;
 
-        //  강사로부터 동기화 중이면 전송하지 않음 (무한 루프 방지)
+        // 강사로부터 동기화 중이면 전송하지 않음 (무한 루프 방지)
         if (isSyncingFromInstructor.current) {
             console.log('[CodePanel-Student] 강사 동기화 중 - 전송 스킵');
             return;
@@ -126,7 +125,9 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                 language: 'javascript',
                 output: output || null,
                 type: isInstructor ? 'INSTRUCTOR_EXAMPLE' : undefined,
+
                 userEmail: user?.email, // 발신자 이메일 추가
+
             };
 
             try {
