@@ -2,6 +2,8 @@ import styles from './ClassSidebar.module.css';
 import { useState } from "react";
 import { useSidebar } from "@/features/classroom/hooks/class/useSidebar.js";
 import { useParticipants } from "@/features/classroom/hooks/class/useParticipants.js";
+import { useSelectedStudent } from "@/features/classroom/hooks/class/useSelectedStudent.js"; // ✅ 추가
+import { useUser } from "@/hooks/useUser.js"; // ✅ 추가
 import { useParams } from "react-router-dom";
 import { decodeNumber } from "@/utils/urlEncoder";
 import ChatPanel from "@/features/classroom/components/chat/ChatPanel.jsx";
@@ -11,9 +13,29 @@ const ClassSidebar = () => {
     const [activeTab, setActiveTab] = useState('students');
     const { encodedId } = useParams();
     const classId = decodeNumber(encodedId);
+    const { user } = useUser(); // ✅ 현재 사용자
 
     // 실시간 참가자 목록
     const { students, instructors, totalCount } = useParticipants(classId);
+
+    // ✅ 선택된 학생 관리
+    const { selectedStudent, selectStudent } = useSelectedStudent();
+
+    // 강사 여부 확인
+    const isInstructor = user?.role === 'INSTRUCTOR';
+
+    // ✅ 학생 클릭 핸들러
+    const handleStudentClick = (student) => {
+        if (!isInstructor) return; // 강사만 선택 가능
+
+        selectStudent({
+            userId: student.userId,
+            username: student.username,
+            userEmail: student.userEmail || `user${student.userId}@temp.com`, // 임시 이메일
+        });
+
+        console.log('[ClassSidebar] 학생 선택:', student);
+    };
 
     return (
         <>
@@ -89,7 +111,12 @@ const ClassSidebar = () => {
                                             {students.map((student) => (
                                                 <div
                                                     key={student.userId}
-                                                    className={styles.studentItem}
+                                                    className={`
+                                                        ${styles.studentItem} 
+                                                        ${isInstructor ? styles.clickable : ''}
+                                                        ${selectedStudent?.userId === student.userId ? styles.selected : ''}
+                                                    `}
+                                                    onClick={() => handleStudentClick(student)}
                                                 >
                                                     <div className={styles.participantInfo}>
                                                         <div className={styles.participantName}>
@@ -116,6 +143,11 @@ const ClassSidebar = () => {
                                 {/* 전체 인원 */}
                                 <div className={styles.totalCount}>
                                     총 {totalCount}명 접속 중
+                                    {isInstructor && selectedStudent && (
+                                        <div className={styles.selectedInfo}>
+                                            선택: {selectedStudent.username}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}

@@ -1,7 +1,7 @@
 // features/classroom/components/CodePanel.jsx (리팩토링 버전)
 
 import Editor from '@monaco-editor/react';
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styles from './CodePanel.module.css';
 import { useCode } from "@/features/classroom/hooks/code/useCode.js";
@@ -11,8 +11,10 @@ import { getEditorOptions } from "@/features/classroom/utils/editorUtils.js";
 import { api } from "@/services/api.js";
 import { useSocketContext } from "@/features/classroom/contexts/SocketContext";
 import { useClassMode, CLASS_MODES } from "@/features/classroom/contexts/ClassModeContext";
+import { useUser } from "@/hooks/useUser.js"; // ✅ 추가
 
 const CodePanel = ({ classId, isInstructor = false }) => {
+    const { user } = useUser(); // ✅ 현재 사용자 정보
     const { code, setCode } = useCode();
     const { editorInstance, handleEditorMount } = useMonacoEditor();
     const { output, run, copy } = useCodeExecution(code);
@@ -23,6 +25,7 @@ const CodePanel = ({ classId, isInstructor = false }) => {
 
     const debounceTimerRef = useRef(null);
     const isInitialLoadRef = useRef(true);
+    const isSyncingFromInstructor = useRef(false); // 강사로부터 동기화 중 플래그
 
     // 선생님은 항상 편집 가능, 학생만 읽기 전용 모드의 영향을 받음
     const isReadOnly = !isInstructor && mode === CLASS_MODES.VIEW_ONLY;
@@ -60,11 +63,58 @@ const CodePanel = ({ classId, isInstructor = false }) => {
         }
     }, [classId]);
 
+    // ✅ 학생: 강사가 CodeSharePanel에서 편집한 "자기" 코드만 수신
+    useEffect(() => {
+        if (isInstructor) return; // 강사는 수신 안 함
+        if (!socket || !socket.connected) return;
+
+        const instructorTopic = `/topic/code/instructor/${classId}`;
+        console.log(`[CodePanel-Student] 강사 편집 코드 구독: ${instructorTopic}`);
+
+        const subscription = socket.subscribe(instructorTopic, (data) => {
+            console.log('[CodePanel-Student] 수신:', data);
+
+            if (!data || data.code == null) return;
+
+            // ✅ STUDENT_EDIT 타입이고, 자기를 대상으로 한 편집만 반영
+            if (data.type === 'STUDENT_EDIT') {
+                // targetEmail이 있으면 자기 이메일과 비교
+                if (data.targetEmail && data.targetEmail !== user?.email) {
+                    console.log('[CodePanel-Student] 다른 학생 대상 편집 무시:', data.targetEmail);
+                    return;
+                }
+
+                isSyncingFromInstructor.current = true;
+                setCode(data.code);
+                setTimeout(() => {
+                    isSyncingFromInstructor.current = false;
+                }, 0);
+
+                console.log('[CodePanel-Student] ✅ 강사 편집 반영 (type: STUDENT_EDIT)');
+            } else {
+                console.log('[CodePanel-Student] 무시 (type:', data.type, ') - CodeSharePanel에서만 표시');
+            }
+        });
+
+        return () => {
+            if (subscription) {
+                subscription.unsubscribe();
+                console.log(`[CodePanel-Student] 강사 편집 구독 해제`);
+            }
+        };
+    }, [socket, socket?.connected, classId, isInstructor, setCode, user?.email]);
+
     // 자동 전송 (디바운스)
     useEffect(() => {
         if (isInitialLoadRef.current || isLoading) return;
         if (!socket || !socket.connected || !classId) return;
         if (isReadOnly) return;
+
+        // ✅ 강사로부터 동기화 중이면 전송하지 않음 (무한 루프 방지)
+        if (isSyncingFromInstructor.current) {
+            console.log('[CodePanel-Student] 강사 동기화 중 - 전송 스킵');
+            return;
+        }
 
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
@@ -75,6 +125,8 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                 code: code,
                 language: 'javascript',
                 output: output || null,
+                type: isInstructor ? 'INSTRUCTOR_EXAMPLE' : undefined,
+                userEmail: user?.email, // ✅ 발신자 이메일 추가
             };
 
             try {
@@ -85,7 +137,7 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                 socket.publish(endpoint, message);
                 setLastSavedTime(new Date());
 
-                console.log(`[CodePanel] 코드 전송: ${endpoint}`);
+                console.log(`[CodePanel] 코드 전송: ${endpoint}`, message.type);
             } catch (error) {
                 console.error('자동 전송 실패:', error);
             }

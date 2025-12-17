@@ -229,3 +229,42 @@
     border-radius: var(--radius-base);
     border: 1px solid var(--color-border-dark);
 }
+
+/* 클릭 가능한 학생 아이템 */
+.studentItem.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.studentItem.clickable:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary-500);
+    transform: translateX(4px);
+}
+
+/* 선택된 학생 */
+.studentItem.selected {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: var(--color-primary-500);
+    border-width: 2px;
+}
+
+.studentItem.selected .participantName {
+    color: var(--color-primary-500);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* 선택된 학생 정보 */
+.selectedInfo {
+    margin-top: var(--spacing-2);
+    padding-top: var(--spacing-2);
+    border-top: 1px solid var(--color-border-dark);
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-500);
+}
+
+
+
+
+
+
