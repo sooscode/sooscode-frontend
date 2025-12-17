@@ -1,30 +1,37 @@
 import { useState } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styles from './ClassBody.module.css';
 import { useSidebar } from "@/features/classroom/hooks/class/useSidebar.js";
 import { useUser } from "@/hooks/useUser.js";
-import { useResize } from "@/features/classroom/hooks/class/useResize.js";
 import SnapshotPanel from "@/features/classroom/components/snapshot/SnapshotPanel.jsx";
 import CodePanel from "@/features/classroom/components/code/CodePanel.jsx";
 import CodeSharePanel from "@/features/classroom/components/code/CodeSharePanel.jsx";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { decodeNumber } from "@/utils/urlEncoder";
 import { useSocketContext } from "@/features/classroom/contexts/SocketContext";
 import TopButtonBar from "@/features/classroom/components/code/TopButtonBar.jsx";
 import LivekitVideo from "@/features/classroom/components/livekit/LivekitVideo.jsx";
 import SnapshotSaveFeature from "@/features/classroom/components/snapshot/SnapshotSaveFeature.jsx";
+import {useClassJoin} from "@/features/classroom/hooks/class/useClassJoin.js";
 
 
 const ClassBody = () => {
     const { collapsed } = useSidebar();
     const { user } = useUser();
     const [activeTab, setActiveTab] = useState('code');
-    const { targetRef: leftRef, startResize } = useResize();
     const { encodedId } = useParams();
     const socket = useSocketContext();
 
     // 권한 별 다른 글씨
     const isInstructor = user?.role === 'INSTRUCTOR';
     const isStudent = user?.role === 'STUDENT';
+
+
+    const classId = decodeNumber(encodedId);
+
+    // 클래스 자동 입장 (채팅 채널 구독)
+    useClassJoin(classId);
+
 
     /**
      * 수업 모드 변경
@@ -35,7 +42,6 @@ const ClassBody = () => {
         return '학생 코드';
     };
 
-    const classId = decodeNumber(encodedId);
 
     return (
         <div
@@ -54,54 +60,60 @@ const ClassBody = () => {
             {/* 코드 영역 */}
             <div className={styles.page}>
                 <div className={styles.content}>
-                    {/* 왼쪽 패널 */}
-                    <div className={`${styles.inner} ${styles.left}`} ref={leftRef}>
-                        <div className={styles.tabContainer}>
-                            {/*<button className={styles.tab}>내 코드</button>*/}
-                            {isInstructor ? (
-                                <TopButtonBar />
-                            ) : (
-                                <SnapshotSaveFeature />
-                            )}
-                        </div>
-                        <CodePanel classId={classId} isInstructor={isInstructor} />
-                    </div>
+                    <PanelGroup direction="horizontal">
+                        {/* 왼쪽 패널 */}
+                        <Panel defaultSize={50} minSize={20} maxSize={80}>
+                            <div className={`${styles.inner} ${styles.left}`}>
+                                <div className={styles.tabContainer}>
+                                    {isInstructor ? (
+                                        <TopButtonBar />
+                                    ) : (
+                                        <div className={styles.snapButtoncontainer}>
+                                            <SnapshotSaveFeature />
+                                        </div>
+                                    )}
+                                </div>
+                                <CodePanel classId={classId} isInstructor={isInstructor} />
+                            </div>
+                        </Panel>
 
+                        {/* 리사이즈 핸들 */}
+                        <PanelResizeHandle className={styles.resizer}>
+                            <div className={styles.resizerInner} />
+                        </PanelResizeHandle>
 
-                    {/* 리사이즈 바 */}
-                    <div className={styles.resizer} onMouseDown={startResize}>
-                        <div className={styles.dotWrap} />
-                    </div>
-
-                    {/* 오른쪽 패널 */}
-                    <div className={`${styles.inner} ${styles.right}`}>
-                        <div className={styles.tabs}>
-                            <button
-                                className={`${styles.tab} ${activeTab === 'code' ? styles.active : ''}`}
-                                onClick={() => setActiveTab('code')}
-                            >
-                                {getRightPanelLabel()}
-                            </button>
-                            <button
-                                className={`${styles.tab} ${activeTab === 'snapshot' ? styles.active : ''}`}
-                                onClick={() => setActiveTab('snapshot')}
-                            >
-                                스냅샷
-                            </button>
-                        </div>
-                        <div
-                            className={styles.panel}
-                            style={{ display: activeTab === 'code' ? 'block' : 'none' }}
-                        >
-                            <CodeSharePanel classId={classId} isInstructor={isInstructor} />
-                        </div>
-                        <div
-                            className={styles.panel}
-                            style={{ display: activeTab === 'snapshot' ? 'block' : 'none' }}
-                        >
-                            <SnapshotPanel />
-                        </div>
-                    </div>
+                        {/* 오른쪽 패널 */}
+                        <Panel defaultSize={50} minSize={20} maxSize={80}>
+                            <div className={`${styles.inner} ${styles.right}`}>
+                                <div className={styles.tabs}>
+                                    <button
+                                        className={`${styles.tab} ${activeTab === 'code' ? styles.active : ''}`}
+                                        onClick={() => setActiveTab('code')}
+                                    >
+                                        {getRightPanelLabel()}
+                                    </button>
+                                    <button
+                                        className={`${styles.tab} ${activeTab === 'snapshot' ? styles.active : ''}`}
+                                        onClick={() => setActiveTab('snapshot')}
+                                    >
+                                        스냅샷
+                                    </button>
+                                </div>
+                                <div
+                                    className={styles.panel}
+                                    style={{ display: activeTab === 'code' ? 'block' : 'none' }}
+                                >
+                                    <CodeSharePanel classId={classId} isInstructor={isInstructor} />
+                                </div>
+                                <div
+                                    className={styles.panel}
+                                    style={{ display: activeTab === 'snapshot' ? 'block' : 'none' }}
+                                >
+                                    <SnapshotPanel />
+                                </div>
+                            </div>
+                        </Panel>
+                    </PanelGroup>
                 </div>
             </div>
         </div>
