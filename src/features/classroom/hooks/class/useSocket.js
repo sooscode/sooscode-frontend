@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-
-const SOCKET_URL = 'http://localhost:8080/ws';
+import { SOCKET_URL } from '@/services/api';
 
 const useSocket = (classroomId, isInstructor = false) => {
     const [connected, setConnected] = useState(false);

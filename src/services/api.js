@@ -1,7 +1,11 @@
 import axios from "axios";
 
+const BASE_URL = "https://sooscode.kro.kr";
+
+export const SOCKET_URL = `${BASE_URL}/ws`;
+
 export const api = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: {BASE_URL},
     withCredentials: true,
     timeout: 5000,
 });
