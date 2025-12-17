@@ -90,6 +90,8 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                     isSyncingFromInstructor.current = false;
                 }, 0);
 
+                console.log('[CodePanel-Student] 강사 편집 반영 (type: STUDENT_EDIT)');
+
             } else {
             }
         });
@@ -123,7 +125,9 @@ const CodePanel = ({ classId, isInstructor = false }) => {
                 language: 'javascript',
                 output: output || null,
                 type: isInstructor ? 'INSTRUCTOR_EXAMPLE' : undefined,
-                userEmail: user?.email,
+
+                userEmail: user?.email, // 발신자 이메일 추가
+
             };
 
             try {

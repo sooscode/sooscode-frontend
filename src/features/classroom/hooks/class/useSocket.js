@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-
-const SOCKET_URL = 'http://localhost:8080/ws';
+import { SOCKET_URL } from '@/services/api';
 
 const useSocket = (classroomId, isInstructor = false) => {
     const [connected, setConnected] = useState(false);
@@ -86,7 +85,6 @@ const useSocket = (classroomId, isInstructor = false) => {
             return null;
         }
 
-        console.log('[WebSocket] 구독:', destination);
         return clientRef.current.subscribe(destination, (message) => {
             try {
                 const data = JSON.parse(message.body);
@@ -102,7 +100,6 @@ const useSocket = (classroomId, isInstructor = false) => {
             return;
         }
 
-        console.log('[WebSocket] 발행:', destination, body);
         clientRef.current.publish({
             destination,
             body: JSON.stringify(body),
