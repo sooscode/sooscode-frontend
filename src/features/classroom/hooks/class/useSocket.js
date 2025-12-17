@@ -31,7 +31,6 @@ const useSocket = (classroomId, isInstructor = false) => {
 
             // 연결 성공
             onConnect: () => {
-                console.log('[WebSocket] 연결 성공');
                 setConnected(true);
                 setError(null);
                 reconnectAttempts.current = 0;
@@ -39,20 +38,17 @@ const useSocket = (classroomId, isInstructor = false) => {
 
             // 연결 해제
             onDisconnect: () => {
-                console.log('[WebSocket] 연결 해제');
                 setConnected(false);
             },
 
             // STOMP 에러
             onStompError: (frame) => {
-                console.error('[WebSocket] STOMP 에러:', frame.headers['message']);
                 setError(frame.headers['message'] || '연결 오류');
                 setConnected(false);
             },
 
             // WebSocket 에러
             onWebSocketError: (event) => {
-                console.error('[WebSocket] 연결 에러:', event);
                 setError('서버에 연결할 수 없습니다.');
             },
 
@@ -87,7 +83,6 @@ const useSocket = (classroomId, isInstructor = false) => {
 
     const subscribe = useCallback((destination, callback) => {
         if (!clientRef.current?.connected) {
-            console.warn('[WebSocket] 연결되지 않은 상태에서 구독 시도:', destination);
             return null;
         }
 
@@ -104,7 +99,6 @@ const useSocket = (classroomId, isInstructor = false) => {
 
     const publish = useCallback((destination, body) => {
         if (!clientRef.current?.connected) {
-            console.warn('[WebSocket] 연결되지 않은 상태에서 발행 시도:', destination);
             return;
         }
 
