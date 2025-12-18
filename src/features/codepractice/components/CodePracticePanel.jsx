@@ -110,7 +110,6 @@ export default function CodePracticePanel() {
         />
 
       </div>
-
       <CodePracticeCompileContainer
       title={"코드 실행 결과"}
       output={storeOutput}

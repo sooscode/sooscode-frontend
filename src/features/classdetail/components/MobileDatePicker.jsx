@@ -21,7 +21,7 @@ export default function MobileDatePicker({ dates, selected, onSelect }) {
       {open && (
         <div
           className={styles.picker}
-          onClick={(e) => e.stopPropagation()} // 🔥 picker 클릭 시 닫히는 거 방지
+          onClick={(e) => e.stopPropagation()} // picker 클릭 시 닫히는 거 방지
         >
           <DatePicker
             inline

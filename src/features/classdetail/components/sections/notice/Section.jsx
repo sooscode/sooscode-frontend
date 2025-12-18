@@ -1,5 +1,6 @@
 import styles from "./Section.module.css";
 
+// 공지사항 섹션 컴포넌트 (사용X)
 export default function Section({ classInfo }) {
   return (
     <div className={styles.body}>
@@ -26,15 +27,10 @@ export default function Section({ classInfo }) {
         </div>
       </div>
 
-
       <div className={styles.infoCard}>
         <p className={styles.description}>
           {classInfo.description}
         </p>
-
-        
-
-        
       </div>
     </div>
   );

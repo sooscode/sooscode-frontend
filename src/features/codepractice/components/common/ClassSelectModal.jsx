@@ -1,4 +1,4 @@
-import { getMyClasses } from "../../services/class/mypageClass.api";
+import { getMyClasses, getMyClassesForSnapshot } from "../../services/class/mypageClass.api";
 import styles from "./ClassSelectModal.module.css";
 import { useEffect, useState } from "react";
 
@@ -9,7 +9,7 @@ export default function ClassSelectModal({ onSelect, onClose }) {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await getMyClasses();
+        const res = await getMyClassesForSnapshot({ page: 0, size: 1000 });
         console.log(res);
         setClasses(res?.content ?? []);
       } catch (e) {

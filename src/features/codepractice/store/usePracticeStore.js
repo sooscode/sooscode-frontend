@@ -99,32 +99,6 @@ export const usePracticeStore = create((set, get) => ({
   run: async () => {
     const { code, language ,htmlCode, cssCode, jsCode} = get();
     if (get().isRunning) return;
-
-    // =======================================
-    // Python 실행
-    // =======================================
-    /*
-    if (language === "PYTHON") {
-      try {
-        const pyodide = await loadPyodideInstance();
-        let outputText = "";
-        pyodide.globals.set("print", (...args) => {
-          outputText += args.join(" ") + "\n";
-        });
-
-        pyodide.globals.set("print_err", (...args) => {
-          outputText += args.join(" ") + "\n";
-        });
-
-        await pyodide.runPythonAsync(code);
-
-        set({ output: outputText });
-      } catch (err) {
-        set({ output: String(err) });
-      }
-      return;
-    }
-      */
      if (language === "PYTHON") {
       if (!pythonWorker) {
         pythonWorker = new Worker(
@@ -152,42 +126,33 @@ export const usePracticeStore = create((set, get) => ({
       return;
     }
 
-    // =======================================
-    // Java 실행
-    // =======================================
     if (language === "JAVA") {
-  console.log("java 컴파일러 실행");
+      console.log("java 컴파일러 실행");
 
-  set({ isRunning: true, output: "실행 중..." });
+      set({ isRunning: true, output: "실행 중..." });
 
-  const result = await runJavaCode({ code: encodeBase64(code) });
-      console.log(result)
-  if (result.success) {
-    set({ output: result.output });
-  } else {
-    set({ output: result.output }); // 컴파일/런타임 에러 메시지
-  }
+      const result = await runJavaCode({ code: encodeBase64(code) });
+          console.log(result)
+      if (result.success) {
+        set({ output: result.output });
+      } else {
+        set({ output: result.output });
+      }
 
-  set({ isRunning: false });
-  return;
-}
+      set({ isRunning: false });
+      return;
+    }
 
-    // ================================
-    // HCJ 실행 = 브라우저 렌더링
-    // ================================
     if (language === "CSS_HTML_JS") {
       console.log("HCJ render 실행");
       const safeJS = JSON.stringify(jsCode);
-
       // iframe으로 렌더링 → 코드 프리뷰 영역에서 subscribe 해서 보기
       
       console.log("=== RUN 실행 ===");
       console.log("HCJ render 실행");
       console.log("language:", language);
-      //console.log("[HTML]:", htmlCode);
-      //console.log("[CSS]:", cssCode);
-      //console.log("[JS]:", jsCode);
 
+      
       const fullHTML = `
 <html>
   <head>
@@ -214,11 +179,15 @@ try {
 `;
 
 
-      set({ renderHTML: fullHTML }); 
-      set({ consoleOutput: "" });   // 콘솔 초기화 (이게 진짜 콘솔)
 
-      //console.log(fullHTML);
+      set({
+  consoleOutput: "",
+  renderHTML: fullHTML,
+});
+
+
       return;
     }
+    console.log("hello1");
   },
 }));

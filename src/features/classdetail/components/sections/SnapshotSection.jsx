@@ -55,7 +55,6 @@ export default function SnapshotSection({ snapshots }) {
             onSelect={setSelected}
           />
         </div>
-
       <div className={styles.mobileDatePicker}>
       <MobileDatePicker
         dates={dates}
@@ -63,7 +62,6 @@ export default function SnapshotSection({ snapshots }) {
         onSelect={setSelected}
       />
       </div>
-
       <div className={styles.snapshotContainer}>
         {filteredSnapshots.length > 0 ? (
           filteredSnapshots.map((snap) => (
@@ -83,7 +81,6 @@ export default function SnapshotSection({ snapshots }) {
           <div>해당 날짜에 스냅샷이 없습니다.</div>
         )}
       </div>
-
       <CodeModal
         open={open}
         onClose={() => setOpen(false)}

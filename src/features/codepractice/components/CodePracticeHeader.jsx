@@ -33,7 +33,7 @@ export default function CodePracticeHeader({
         <div className={styles.lang}>
           {showCopyButton && (<button className={styles.copyBtn} onClick={onCopy}>복사</button>)}
           {/* {onCreate && (<button className={styles.createBtn} onClick={onCreate}>새 스냅샷</button>)} */}
-          {onSaveNew && (<button className={styles.saveBtn} onClick={onSaveNew}>저장</button>)}
+          {onSaveNew && (<button className={styles.saveBtn} onClick={onSaveNew}>스냅샷 저장</button>)}
           {showSaveButton && (<button className={styles.saveBtn} onClick={onSave}>저장</button>)}
           {showEditButton && (<button className={styles.editBtn} onClick={onEdit}>수정</button>)}
           {onDelete && (<button className={styles.deleteBtn} onClick={onDelete}>삭제</button>)}

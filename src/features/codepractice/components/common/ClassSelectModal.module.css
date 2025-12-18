@@ -55,3 +55,8 @@
 .closeBtn {
   margin-top: 12px;
 }
+
+.list {
+  max-height: 400px;
+  overflow-y: auto;
+}

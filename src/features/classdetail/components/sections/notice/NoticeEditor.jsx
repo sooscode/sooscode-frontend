@@ -4,10 +4,10 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEffect } from "react";
-
 import NoticeEditorToolbar from "./NoticeEditorToolbar";
 import styles from "./NoticeEditor.module.css";
 
+// 공지사항 에디터 관련 컴포넌트 (사용 X)
 export default function NoticeEditor({ value, onChange }) {
   const editor = useEditor({
     extensions: [
@@ -22,7 +22,7 @@ export default function NoticeEditor({ value, onChange }) {
     ],
     content: value,
     onUpdate({ editor }) {
-      // ✅ HTML string 하나만 유지
+      //  HTML string 하나만 유지
       onChange(editor.getHTML());
     },
   });
@@ -32,7 +32,7 @@ export default function NoticeEditor({ value, onChange }) {
   if (!editor) return;
 
   const current = editor.getHTML();
-  if (current === value) return; // ★ 중요
+  if (current === value) return;
 
   editor.commands.setContent(value || "", false);
 }, [value, editor]);

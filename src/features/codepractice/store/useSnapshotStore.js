@@ -99,6 +99,18 @@ saveNormalSnapshot: async ({ title, content, language, classId }) => {
     set({ isSaving: false });
   }
 },
+updateSnapshotLocal: (updated) =>
+  set((state) => ({
+    snapshots: state.snapshots.map((s) =>
+      s.snapshotId === updated.snapshotId
+        ? { ...s, ...updated }
+        : s
+    ),
+    selectedSnapshot:
+      state.selectedSnapshot?.snapshotId === updated.snapshotId
+        ? { ...state.selectedSnapshot, ...updated }
+        : state.selectedSnapshot,
+  })),
 
 
 

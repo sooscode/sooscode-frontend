@@ -30,6 +30,8 @@ export default function HCJCodePanelCompile() {
   return () => window.removeEventListener("message", handleMessage);
 }, []);
 
+  console.log("output :" , consoleOutput)
+
   return (
     <div className={styles.compile}>
       {consoleOutput}

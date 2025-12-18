@@ -4,7 +4,6 @@
   color: var(--color-text-primary);
 }
 
-/* 문서 느낌 */
 .viewer h1 {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);

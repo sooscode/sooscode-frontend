@@ -1,5 +1,6 @@
 import styles from "./NoticeEditor.module.css";
 
+// 에디터 툴바 설정 ( 사용 X )
 export default function NoticeEditorToolbar({ editor }) {
   if (!editor) return null;
 

@@ -33,6 +33,11 @@ export function formatLocalDate(date) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+export const formatTime = (timeStr) => {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  return `${h}:${m}`;
+}
 /* usage
 import { formatDate, formatDateTime } from "@/common/utils/date";
 
