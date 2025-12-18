@@ -1,82 +1,92 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
-export default function ChatInput({ inputValue, setInputValue, onSubmit, sendTyping, stopTyping, chatError }) {
-
-    const MAX = 500;
-
+export default function ChatInput({
+                                      inputValue,
+                                      setInputValue,
+                                      onSubmit,
+                                      sendTyping,
+                                      stopTyping,
+                                      chatError,
+                                  }) {
     const textareaRef = useRef(null);
+    const sendingRef = useRef(false); // 🔒 중복 전송 차단
 
-    // 텍스트 영역 높이 자동 조절
+    /* textarea 높이 자동 조절 */
     useEffect(() => {
-        if (textareaRef.current) {
+        const el = textareaRef.current;
+        if (!el) return;
 
-            // 값이 없으면 높이 초기화
-            if (!inputValue || inputValue.trim() === "") {
-                textareaRef.current.style.height = "40px";
-                textareaRef.current.style.overflowY = "hidden";
+        el.style.height = "40px";
+        el.style.overflowY = "hidden";
+
+        if (!inputValue?.trim()) return;
+
+        const maxHeight = 120;
+        el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
+        el.style.overflowY = el.scrollHeight > maxHeight ? "auto" : "hidden";
+    }, [inputValue]);
+
+    /* 전송 (단일 진입점) */
+    const submitMessage = useCallback(() => {
+        if (!inputValue.trim()) return;
+        if (sendingRef.current) return; // 🔥 핵심
+
+        sendingRef.current = true;
+        onSubmit();
+
+        setInputValue("");
+        stopTyping?.();
+
+        // 다음 tick에서 해제
+        requestAnimationFrame(() => {
+            sendingRef.current = false;
+        });
+    }, [inputValue, onSubmit, setInputValue, stopTyping]);
+
+    /* 키 입력 처리 */
+    const handleKeyDown = useCallback(
+        (e) => {
+            // 🔥 IME 입력 중이면 무시 (한글 핵심)
+            if (e.isComposing || e.keyCode === 229) return;
+
+            // Shift + Enter → 줄바꿈
+            if (e.key === "Enter" && e.shiftKey) return;
+
+            // Enter → 전송
+            if (e.key === "Enter") {
+                e.preventDefault();
+                submitMessage();
                 return;
             }
 
-            // 높이를 초기화하여 scrollHeight를 정확하게 측정
-            textareaRef.current.style.height = "40px";
-
-            const scrollHeight = textareaRef.current.scrollHeight;
-
-            // scrollHeight가 40px(1줄)보다 크면 높이 증가
-            if (scrollHeight > 40) {
-                textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
-                textareaRef.current.style.overflowY = scrollHeight > 120 ? "auto" : "hidden";
-            } else {
-                textareaRef.current.style.overflowY = "hidden";
-            }
-        }
-    }, [inputValue]);
-    // 키 입력 핸들러
-    const handleKeyDown = (e) => {
-        // Enter 키 처리
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            onSubmit(e);
-            return;
-        }
-
-        // Shift + Enter는 줄바꿈 (기본 동작)
-
-        // 타이핑 표시
-        sendTyping?.(e);
-    };
-
-    // 입력 변경 핸들러
-    const handleChange = (e) => {
-        setInputValue(e.target.value);
-    };
-
-    // 전송 버튼 클릭
-    const handleSubmitClick = (e) => {
-        e.preventDefault();
-        onSubmit(e);
-    };
+            sendTyping?.();
+        },
+        [submitMessage, sendTyping]
+    );
 
     return (
         <>
-        <form  onSubmit={handleSubmitClick} className="chat-sidebar__input">
-            <textarea
-                onInput={(e) => {
-                    const el = e.target;
-                    el.style.height = "36px";
-                    el.style.height = Math.min(el.scrollHeight, 120) + "px";
-                    el.style.overflowY = el.scrollHeight > 120 ? "auto" : "hidden";
-                }}
-                ref={textareaRef}
-                value={inputValue}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                placeholder="메시지를 입력하세요"
-                className="chat-input-textarea"
-            />
-            <button type="submit">전송</button>
-        </form>
+            <div className="chat-sidebar__input">
+        <textarea
+            ref={textareaRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="메시지를 입력하세요"
+            className="chat-input-textarea"
+            rows={1}
+        />
+
+                <button
+                    type="button"
+                    onClick={submitMessage}
+                    disabled={!inputValue.trim()}
+                >
+                    전송
+                </button>
+            </div>
+
             {chatError && <div className="chat-error">{chatError}</div>}
-            </>
+        </>
     );
 }
