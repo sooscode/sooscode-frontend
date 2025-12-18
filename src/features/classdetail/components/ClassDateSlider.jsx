@@ -44,7 +44,7 @@ export default function ClassDateSlider({ dates, selected, onSelect }) {
       setStartIndex(pageStart);
       onSelect(today);
     }
-  }, []); // ✅ 처음 마운트 시 1회
+  }, []); //  처음 마운트 시 1회
   
 
   return (

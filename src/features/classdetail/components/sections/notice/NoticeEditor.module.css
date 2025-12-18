@@ -5,9 +5,6 @@
   background: var(--color-bg-primary);
 }
 
-/* =========================
-   ProseMirror 기본 설정
-========================= */
 .editorWrapper :global(.ProseMirror) {
   outline: none;
   font-family: var(--font-family-primary);
@@ -16,14 +13,10 @@
   color: var(--color-text-primary);
 }
 
-/* 커서 위치에서도 padding 유지 */
 .editorWrapper :global(.ProseMirror > *:last-child) {
   margin-bottom: 0;
 }
 
-/* =========================
-   제목
-========================= */
 .editorWrapper h1 {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
@@ -42,23 +35,16 @@
   margin: var(--spacing-4) 0 var(--spacing-2);
 }
 
-/* =========================
-   문단
-========================= */
 .editorWrapper p {
   margin: 0 0 var(--spacing-3);
 }
 
-/* 빈 문단 높이 유지 (엔터 연타 대응) */
 .editorWrapper p:empty::after {
   content: "";
   display: inline-block;
   height: 1em;
 }
 
-/* =========================
-   리스트
-========================= */
 .editorWrapper ul,
 .editorWrapper ol {
   padding-left: 24px;
@@ -69,9 +55,6 @@
   margin-bottom: var(--spacing-1);
 }
 
-/* =========================
-   인라인 강조
-========================= */
 .editorWrapper strong {
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
@@ -82,9 +65,6 @@
   color: var(--color-text-secondary);
 }
 
-/* =========================
-   코드
-========================= */
 .editorWrapper code {
   background: #1f2937;
   color: #e5e7eb;
@@ -93,7 +73,6 @@
   font-size: 0.9em;
 }
 
-/* 블록 코드 (StarterKit 기준) */
 .editorWrapper pre {
   background: #0f172a;
   color: #e5e7eb;
@@ -108,9 +87,6 @@
   padding: 0;
 }
 
-/* =========================
-   Placeholder (TipTap)
-========================= */
 .editorWrapper
   :global(.ProseMirror p.is-editor-empty:first-child::before) {
   content: attr(data-placeholder);
@@ -120,9 +96,6 @@
   height: 0;
 }
 
-/* =========================
-   선택 영역
-========================= */
 .editorWrapper :global(.ProseMirror ::selection) {
   background: rgba(59, 130, 246, 0.3); /* blue-500 */
 }

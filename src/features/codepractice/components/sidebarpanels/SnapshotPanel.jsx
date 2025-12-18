@@ -36,6 +36,12 @@ export default function SnapshotPanel() {
   const refreshKey = useSnapshotStore((s) => s.refreshKey);
 
   useEffect(() => {
+    if (refreshKey !== 0) {
+    // 🔥 refresh로 인한 갱신이면 snapshots를 비우지 않음
+    setPage(0);
+    setHasMore(true);
+    return;
+  }
     setSnapshots([]);
     setPage(0);
     setHasMore(true);

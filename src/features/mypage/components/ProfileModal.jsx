@@ -5,7 +5,6 @@ import { updatePassword, deleteUser } from "@/features/mypage/services/mypageSer
 import { useUser } from "@/hooks/useUser";
 
 export default function ProfileModal({ onClose }) {
-    const profileImage = "/bruno.png";
   const { user, clearUser } = useUser();
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -56,7 +55,7 @@ export default function ProfileModal({ onClose }) {
         <section className={styles.section}>
         <div className={styles.imgSection}>
             <img
-            src={profileImage}
+            src={user.profileImage}
             alt="profile"
             className={styles.profileImage}
             />
@@ -70,13 +69,6 @@ export default function ProfileModal({ onClose }) {
             <span>이메일</span>
             <span>{user?.email}</span>
           </div>
-        </section>
-
-        {/* ===== 비밀번호 변경 ===== */}
-        <section className={styles.section}>
-          <button onClick={handlePasswordChange}>
-            비밀번호 재설정
-          </button>
         </section>
 
         {/* ===== 회원 탈퇴 ===== */}

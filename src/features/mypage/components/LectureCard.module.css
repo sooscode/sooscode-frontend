@@ -1,36 +1,44 @@
 .card {
   width: 100%;
-  background: var(--color-gray-200);
-  border-radius: 12px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin-top:5px;
+  margin-top: 5px;
 }
 
-/* ===== 썸네일 (인프런 방식 — 절대 찌그러지지 않음) ===== */
+/* 썸네일 */
 .thumbnail {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
-  border-radius: 10px;
+  border-radius: var(--radius-base);
+  transition:
+    filter var(--transition-base),
+    transform var(--transition-base);
 }
 
-/* 아래는 동일 */
+.thumbnailWrapper {
+  position: relative;
+  overflow: hidden;
+}
+
 .body {
-  padding: 12px;
+  padding: var(--spacing-3);
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: 4px;
+  color: var(--color-text-primary);
 }
 
 .teacher {
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .buttonBox {
@@ -38,60 +46,77 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px 10px;
+  padding: 0 var(--spacing-3) var(--spacing-3);
   margin-top: auto;
 }
 
+.buttonWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* 기본 버튼 */
 .detailButton {
   width: 100%;
   padding: 10px 14px;
-  background: #4a7cff;
+  background: var(--color-primary-600);
   border: none;
-  border-radius: 8px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  
+  border-radius: var(--radius-base);
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: background var(--transition-fast);
 }
 
-.thumbnailWrapper {
-  position: relative;
+/* 비활성 버튼 */
+.disabledButton {
+  background: var(--color-gray-600);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
 }
 
-
-/* 오버레이 텍스트 */
-.overlay {
+/* 버튼 위 오버레이 */
+.buttonOverlay {
   position: absolute;
   inset: 0;
+
+  background: rgba(17, 24, 39, 0.65); /* gray-900 */
+  backdrop-filter: blur(2px);
+
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+
+  border-radius: var(--radius-base);
+
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
   opacity: 0;
+  transition: opacity var(--transition-fast);
   pointer-events: none;
-  transition: opacity 0.25s ease;
 }
 
-.thumbnailWrapper:hover .overlay {
+/* hover 시만 표시 */
+.buttonWrapper:hover .buttonOverlay {
   opacity: 1;
 }
 
-.enterText {
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-
+/* 상태 뱃지 */
 .statusBadge {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: var(--spacing-2);
+  left: var(--spacing-2);
 
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
 
   backdrop-filter: blur(4px);
   z-index: 5;
@@ -99,94 +124,26 @@
 
 /* LIVE */
 .online {
-  background: rgba(255, 59, 59, 0.9);
-  color: #fff;
-  box-shadow: 0 0 12px rgba(255, 59, 59, 0.6);
+  background: rgba(239, 68, 68, 0.9); /* error */
+  color: var(--color-text-inverse);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
 }
 
 /* OFFLINE */
 .offline {
-  background: rgba(0, 0, 0, 0.6);
-  color: #ccc;
+  background: rgba(17, 24, 39, 0.6); /* gray-900 */
+  color: var(--color-text-tertiary);
 }
 
-/* ===== LIVE 상태 뱃지 (isOnAir === true일 때만 렌더링) ===== */
-.liveBadge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-
-  padding: 4px 10px;
-  border-radius: 999px;
-
-  font-size: 12px;
-  font-weight: 700;
-  color: white;
-
-  background: rgba(255, 59, 59, 0.95);
-  box-shadow: 0 0 12px rgba(255, 59, 59, 0.6);
-
-  z-index: 5;
+.period,
+.time{
+  font-size:12px;
+  color: var(--color-text-tertiary);
 }
-
-.thumbnailWrapper {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* 썸네일 */
-.thumbnail {
-  width: 100%;
-  display: block;
-  transition:
-    filter var(--transition-base),
-    transform var(--transition-base);
-}
-
-/* hover overlay */
-.hoverOverlay {
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-
-  pointer-events: none; /* 중요 */
-}
-
-/* hover 시 효과 */
-.thumbnailWrapper:hover .thumbnail {
-  filter: blur(2px) brightness(0.75);
-  transform: scale(1.02);
-}
-
-.thumbnailWrapper:hover .hoverOverlay {
-  opacity: 1;
-}
-
-/* 중앙 텍스트 */
-.overlayText {
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.02em;
-}
-
-
-
-
 
 @media (max-width: 480px) {
   .detailButton {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
     padding: 8px 10px;
   }
 }
-
-

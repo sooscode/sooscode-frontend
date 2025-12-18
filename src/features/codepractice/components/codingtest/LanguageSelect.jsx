@@ -2,7 +2,7 @@ import styles from "./ProblemSelect.module.css";
 import { useCodeTestStore } from "../../store/useCodeTestStore";
 
 //const LANGS = ["JS", "PYTHON", "JAVA"];
-const LANGS = ["JS"];
+const LANGS = ["JS","다언어 기능 준비중입니다"];
 
 export default function LanguageSelect({ open, onToggle, onClose }) {
   const language = useCodeTestStore((s) => s.language);
@@ -22,6 +22,10 @@ export default function LanguageSelect({ open, onToggle, onClose }) {
               key={lang}
               className={styles.item}
               onClick={() => {
+                if(lang==="다언어 기능 준비중입니다"){
+                  onClose();
+                  return;
+                }
                 setLanguage(lang);
                 onClose();
               }}

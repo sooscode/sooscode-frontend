@@ -5,7 +5,14 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "변수 선언",
-    code: "int a = 10;\nString b = \"hello\";\nSystem.out.println(a);\nSystem.out.println(b);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int a = 10;
+        String b = "hello";
+        System.out.println(a);
+        System.out.println(b);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -13,7 +20,14 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "산술 연산",
-    code: "int a = 5;\nint b = 3;\nSystem.out.println(a + b);\nSystem.out.println(a * b);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int a = 5;
+        int b = 3;
+        System.out.println(a + b);
+        System.out.println(a * b);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -21,7 +35,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "if 조건문",
-    code: "int n = 7;\nif (n % 2 == 0) {\n    System.out.println(\"짝수\");\n} else {\n    System.out.println(\"홀수\");\n}",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int n = 7;
+        if (n % 2 == 0) {
+            System.out.println("짝수");
+        } else {
+            System.out.println("홀수");
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -29,7 +52,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "switch 문",
-    code: "int day = 2;\nswitch (day) {\n    case 1 -> System.out.println(\"월\");\n    case 2 -> System.out.println(\"화\");\n    default -> System.out.println(\"기타\");\n}",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int day = 2;
+        switch (day) {
+            case 1 -> System.out.println("월");
+            case 2 -> System.out.println("화");
+            default -> System.out.println("기타");
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -37,7 +69,13 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "for 반복문",
-    code: "for (int i = 1; i <= 5; i++) {\n    System.out.println(i);\n}",
+    code: `public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(i);
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -45,7 +83,15 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "while 반복문",
-    code: "int i = 1;\nwhile (i <= 5) {\n    System.out.println(i);\n    i++;\n}",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int i = 1;
+        while (i <= 5) {
+            System.out.println(i);
+            i++;
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -53,7 +99,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "메서드 정의",
-    code: "static int add(int a, int b) {\n    return a + b;\n}\n\nSystem.out.println(add(3, 4));",
+    code: `public class Main {
+
+    static int add(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(add(3, 4));
+    }
+}`,
     isSystem: true,
   },
   {
@@ -61,7 +116,12 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "배열 선언",
-    code: "int[] arr = {1, 2, 3};\nSystem.out.println(arr[1]);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3};
+        System.out.println(arr[1]);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -69,7 +129,13 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "문자열 비교",
-    code: "String a = \"hi\";\nString b = \"hi\";\nSystem.out.println(a.equals(b));",
+    code: `public class Main {
+    public static void main(String[] args) {
+        String a = "hi";
+        String b = "hi";
+        System.out.println(a.equals(b));
+    }
+}`,
     isSystem: true,
   },
   {
@@ -77,7 +143,11 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "기본문법",
     title: "출력",
-    code: "System.out.println(\"Hello Java\");",
+    code: `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello Java");
+    }
+}`,
     isSystem: true,
   },
 
@@ -87,7 +157,14 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "배열 순회",
-    code: "int[] arr = {1, 2, 3, 4};\nfor (int n : arr) System.out.println(n);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4};
+        for (int n : arr) {
+            System.out.println(n);
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -95,7 +172,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "ArrayList 생성",
-    code: "import java.util.*;\nArrayList<Integer> list = new ArrayList<>();\nlist.add(1);\nlist.add(2);\nSystem.out.println(list);",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        System.out.println(list);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -103,7 +189,18 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "ArrayList 순회",
-    code: "import java.util.*;\nArrayList<String> list = new ArrayList<>();\nlist.add(\"A\");\nlist.add(\"B\");\nfor (String s : list) System.out.println(s);",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("A");
+        list.add("B");
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -111,7 +208,15 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "HashMap 사용",
-    code: "import java.util.*;\nHashMap<String, Integer> map = new HashMap<>();\nmap.put(\"a\", 1);\nSystem.out.println(map.get(\"a\"));",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("a", 1);
+        System.out.println(map.get("a"));
+    }
+}`,
     isSystem: true,
   },
   {
@@ -119,7 +224,18 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "HashMap 순회",
-    code: "import java.util.*;\nHashMap<String, Integer> map = new HashMap<>();\nmap.put(\"a\", 1);\nmap.put(\"b\", 2);\nfor (String k : map.keySet()) System.out.println(k);",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("a", 1);
+        map.put("b", 2);
+        for (String k : map.keySet()) {
+            System.out.println(k);
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -127,7 +243,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "Stack",
-    code: "import java.util.*;\nStack<Integer> st = new Stack<>();\nst.push(1);\nst.push(2);\nSystem.out.println(st.pop());",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Stack<Integer> st = new Stack<>();
+        st.push(1);
+        st.push(2);
+        System.out.println(st.pop());
+    }
+}`,
     isSystem: true,
   },
   {
@@ -135,7 +260,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "Queue",
-    code: "import java.util.*;\nQueue<Integer> q = new LinkedList<>();\nq.add(1);\nq.add(2);\nSystem.out.println(q.poll());",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Queue<Integer> q = new LinkedList<>();
+        q.add(1);
+        q.add(2);
+        System.out.println(q.poll());
+    }
+}`,
     isSystem: true,
   },
   {
@@ -143,7 +277,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "Set",
-    code: "import java.util.*;\nSet<Integer> set = new HashSet<>();\nset.add(1);\nset.add(1);\nSystem.out.println(set.size());",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> set = new HashSet<>();
+        set.add(1);
+        set.add(1);
+        System.out.println(set.size());
+    }
+}`,
     isSystem: true,
   },
   {
@@ -151,7 +294,15 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "정렬",
-    code: "import java.util.*;\nList<Integer> list = Arrays.asList(3, 1, 2);\nCollections.sort(list);\nSystem.out.println(list);",
+    code: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(3, 1, 2);
+        Collections.sort(list);
+        System.out.println(list);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -159,7 +310,13 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "자료구조",
     title: "배열 복사",
-    code: "int[] a = {1, 2, 3};\nint[] b = a.clone();\nSystem.out.println(b[0]);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 3};
+        int[] b = a.clone();
+        System.out.println(b[0]);
+    }
+}`,
     isSystem: true,
   },
 
@@ -169,7 +326,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "최댓값",
-    code: "int[] arr = {3, 5, 1};\nint max = arr[0];\nfor (int n : arr) if (n > max) max = n;\nSystem.out.println(max);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {3, 5, 1};
+        int max = arr[0];
+        for (int n : arr) {
+            if (n > max) max = n;
+        }
+        System.out.println(max);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -177,7 +343,14 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "합계",
-    code: "int[] arr = {1, 2, 3};\nint sum = 0;\nfor (int n : arr) sum += n;\nSystem.out.println(sum);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3};
+        int sum = 0;
+        for (int n : arr) sum += n;
+        System.out.println(sum);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -185,7 +358,14 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "평균",
-    code: "int[] arr = {1, 2, 3};\nint sum = 0;\nfor (int n : arr) sum += n;\nSystem.out.println(sum / arr.length);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3};
+        int sum = 0;
+        for (int n : arr) sum += n;
+        System.out.println(sum / arr.length);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -193,7 +373,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "문자열 뒤집기",
-    code: "String s = \"abc\";\nString r = \"\";\nfor (int i = s.length() - 1; i >= 0; i--) r += s.charAt(i);\nSystem.out.println(r);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        String s = "abc";
+        String r = "";
+        for (int i = s.length() - 1; i >= 0; i--) {
+            r += s.charAt(i);
+        }
+        System.out.println(r);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -201,7 +390,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "짝수 개수",
-    code: "int[] a = {1, 2, 4, 5};\nint c = 0;\nfor (int n : a) if (n % 2 == 0) c++;\nSystem.out.println(c);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 4, 5};
+        int c = 0;
+        for (int n : a) {
+            if (n % 2 == 0) c++;
+        }
+        System.out.println(c);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -209,7 +407,17 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "피보나치",
-    code: "int a = 0, b = 1;\nfor (int i = 0; i < 5; i++) {\n    System.out.println(a);\n    int t = a + b;\n    a = b;\n    b = t;\n}",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int a = 0, b = 1;
+        for (int i = 0; i < 5; i++) {
+            System.out.println(a);
+            int t = a + b;
+            a = b;
+            b = t;
+        }
+    }
+}`,
     isSystem: true,
   },
   {
@@ -217,7 +425,12 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "문자 길이",
-    code: "String s = \"hello\";\nSystem.out.println(s.length());",
+    code: `public class Main {
+    public static void main(String[] args) {
+        String s = "hello";
+        System.out.println(s.length());
+    }
+}`,
     isSystem: true,
   },
   {
@@ -225,7 +438,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "최소값",
-    code: "int[] a = {3, 2, 5};\nint m = a[0];\nfor (int n : a) if (n < m) m = n;\nSystem.out.println(m);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {3, 2, 5};
+        int m = a[0];
+        for (int n : a) {
+            if (n < m) m = n;
+        }
+        System.out.println(m);
+    }
+}`,
     isSystem: true,
   },
   {
@@ -233,7 +455,12 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "문자 포함",
-    code: "String s = \"hello\";\nSystem.out.println(s.contains(\"e\"));",
+    code: `public class Main {
+    public static void main(String[] args) {
+        String s = "hello";
+        System.out.println(s.contains("e"));
+    }
+}`,
     isSystem: true,
   },
   {
@@ -241,7 +468,16 @@ export const JAVA_SNIPPETS = [
     language: "JAVA",
     category: "알고리즘",
     title: "값 카운트",
-    code: "int[] a = {1, 1, 2, 1};\nint cnt = 0;\nfor (int n : a) if (n == 1) cnt++;\nSystem.out.println(cnt);",
+    code: `public class Main {
+    public static void main(String[] args) {
+        int[] a = {1, 1, 2, 1};
+        int cnt = 0;
+        for (int n : a) {
+            if (n == 1) cnt++;
+        }
+        System.out.println(cnt);
+    }
+}`,
     isSystem: true,
   },
 ];

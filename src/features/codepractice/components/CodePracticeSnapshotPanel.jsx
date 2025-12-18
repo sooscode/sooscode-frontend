@@ -26,6 +26,7 @@ export default function CodePracticeSnapshotPanel() {
   // Derived state 
   const hasSnapshot = !!selectedSnapshot;
   const isNew = selectedSnapshot?.isNew === true;
+  const refreshKey = useSnapshotStore((s) => s.refreshKey);
 
   // util, helper
   const applyTheme = (monaco) => {
@@ -102,11 +103,11 @@ export default function CodePracticeSnapshotPanel() {
 
       // 새로 저장된 스냅샷으로 상태 교체
       setSelectedSnapshot({
-        snapshotId: res.snapshotId, // 백엔드에서 내려주는 ID
+        snapshotId: res.snapshotId, 
         title: editTitle,
         content,
         language: language,
-        isNew: false, // 🔥 중요
+        isNew: false,
       });
       toast.saveSuccess();
       
@@ -129,7 +130,7 @@ export default function CodePracticeSnapshotPanel() {
 
     try {
       await deleteSnapshot({
-        classId: 1,
+        classId: classId,
         snapshotId: selectedSnapshot.snapshotId,
       });
 
@@ -183,13 +184,11 @@ return (
       onSaveNew={hasSnapshot && isNew ? handleSaveNewSnapshot : null}
       showSaveButton={hasSnapshot && !isNew && !isReadOnly}
       onSave={
-        
         hasSnapshot && !isNew && !isReadOnly
           ? async () => {
             console.log(language);
               const newCode = editorInstance?.getValue();
               if (newCode == null) return;
-
               try {
                 await updateSnapshot({
                   snapshotId: selectedSnapshot.snapshotId,
@@ -205,7 +204,9 @@ return (
                   classId,
                 });
                 setIsReadOnly(true);
-                triggerRefresh();
+                queueMicrotask(() => {
+                  triggerRefresh();
+                });
               } catch (e) {
                 console.error("❌ 스냅샷 저장 실패", e);
               }

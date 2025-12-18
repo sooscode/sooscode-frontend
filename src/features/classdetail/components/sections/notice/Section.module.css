@@ -10,7 +10,6 @@
   background: var(--color-bg-secondary);
   padding: var(--spacing-5);
   border-radius: var(--radius-base);
-
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
@@ -62,11 +61,9 @@
   flex: 1;
   background: var(--color-bg-tertiary:);
   border-radius: var(--radius-base);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--color-text-tertiary);
   font-size: var(--font-size-sm);
 }

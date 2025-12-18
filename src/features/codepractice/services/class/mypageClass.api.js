@@ -17,3 +17,20 @@ export const getMyClassDetail = async (classId) => {
   const res = await api.get(`/api/mypage/detail/${classId}`);
   return res.data;
 };
+
+
+/* 스냅샷 조회용 */
+export const getMyClassesForSnapshot = async ({
+  page = 0,
+  size = 10,
+  sort = "createdAt,desc", // 필요 없으면 제거
+} = {}) => {
+  const res = await api.get("/api/mypage/classes", {
+    params: {
+      page,
+      size,
+      sort,
+    },
+  });
+  return res.data;
+};

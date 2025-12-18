@@ -11,6 +11,7 @@ import { useEffect } from "react";
 export default function Mypage() {
   const { user } = useUser();
   const navigate = useNavigate();
+  console.log(user);
 
   const {
     data,
@@ -32,10 +33,8 @@ export default function Mypage() {
       const scrollHeight = document.documentElement.scrollHeight;
 
       const isBottom =
-        scrollTop + clientHeight >= scrollHeight - 5; // 여유값
-
+        scrollTop + clientHeight >= scrollHeight - 5;
       if (isBottom && hasNextPage && !isFetchingNextPage) {
-        console.log("🔥 window 맨 아래 도달 → fetchNextPage()");
         fetchNextPage();
       }
     };
@@ -44,9 +43,6 @@ export default function Mypage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  /* ===============================
-     ON AIR 상태 계산
-  =============================== */
   const isOnAirNow = (item) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -73,38 +69,48 @@ export default function Mypage() {
 
   const classes =
     data?.pages.flatMap((page) => page?.content ?? []) ?? [];
+//   const sortedClasses = [...classes].sort((a, b) => {
+//   const aOnAir = isOnAirNow(a);
+//   const bOnAir = isOnAirNow(b);
+
+//   console.log(classes)
+
+//   if (aOnAir === bOnAir) return 0;
+//   return aOnAir ? -1 : 1;
+// });
 
   return (
     <div>
       <HeaderBar />
-
       <ProfileCard
         name={user.name}
         email={user.email}
         imageUrl={user.profileImage || defaultImg}
       />
-
       <div className={styles.wrapper}>
         <div className={styles.gridContainer}>
           {classes.map((item) => (
-            <LectureCard
-              key={item.classId}
-              title={item.title}
-              teacher={item.teacherName}
-              imageUrl={item.thumbnailUrl ?? defaultImg}
-              onClick={() => {
-                if (user.role === "STUDENT") {
-                  navigate(`/classdetail/student?classId=${item.classId}`);
-                } else {
-                  navigate(`/classdetail/instructor?classId=${item.classId}`);
-                }
-              }}
-              classId={item.classId}
-              isOnAir={isOnAirNow(item)}
-            />
-          ))}
+      <LectureCard
+        key={item.classId}
+        title={item.title}
+        teacher={item.teacherName}
+        imageUrl={item.thumbnailUrl ?? defaultImg}
+        onClick={() => {
+          if (user.role === "STUDENT") {
+            navigate(`/classdetail/student?classId=${item.classId}`);
+          } else {
+            navigate(`/classdetail/instructor?classId=${item.classId}`);
+          }
+        }}
+        classId={item.classId}
+        isOnAir={isOnAirNow(item)}
+        startDate={item.startDate}
+        endDate={item.endDate}
+        startTime={item.startTime}
+        endTime={item.endTime}
+      />
+      ))}
         </div>
-
         {isFetchingNextPage && <div>불러오는 중...</div>}
       </div>
     </div>

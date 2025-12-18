@@ -5,6 +5,7 @@ import ProfileModal from "./ProfileModal";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "/src/features/auth/components/base/LogoutButton.jsx";
 import useLogout from "../../auth/hooks/useLogout";
+import { useUser } from "../../../hooks/useUser";
 
 export default function HeaderBar() {
 
@@ -12,7 +13,8 @@ export default function HeaderBar() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useLogout();
-  
+  const {user} = useUser();
+  const profileSrc = user.profileImage;
 
   return (
     <div className={styles.header}>
@@ -29,7 +31,7 @@ export default function HeaderBar() {
           onClick={() => setIsProfileModalOpen(true)}
           >
           <img
-            src="/bruno.png"
+            src={profileSrc}
             alt="profile"
             className={styles.profileImage}
           />

@@ -145,11 +145,12 @@ export default function HCJPracticeSection({
           </div>
         </Panel>
         <PanelResizeHandle className={styles.handle} />
+        {/*
         <Panel defaultSize={10} minSize={10}>
           <div className={styles.consoleContainer}>
             <HCJCodePanelCompile/>
           </div>
-        </Panel>
+        </Panel>*/}
       </PanelGroup>
     </div>
   );
